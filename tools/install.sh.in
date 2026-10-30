@@ -1,0 +1,538 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+umask 077
+
+readonly INSTALLER_BUILD_VERSION="0.1.155"
+readonly RELEASE_VERSION="0.1.150"
+readonly RELEASE_SHA256="@CORE_SHA256@"
+readonly RELEASE_ORIGIN="https://github.com/djalil055018-ux/vpn-panel/releases/download/v0.1.155"
+readonly NODE_ASSETS_SHA256="@NODE_ASSETS_SHA256@"
+readonly NODE_VERSION="26.12.1"
+readonly NODE_TARBALL_SHA256="6170b2d474e1c626f43cff3adc118df9fe3b573258a4fc3d850c8dbc6b079bbd"
+readonly DB_CONTAINER="vpn-platform-postgres"
+readonly DB_VOLUME="vpn-platform-postgres18-data"
+readonly POSTGRES_IMAGE="postgres@sha256:898c60cb390d1085bc97bdd6a1ae968757421df394b071848b52b1c09c89d6a5"
+readonly POSTGRES_COMPOSE="/etc/vpn-platform/postgres-compose.json"
+readonly SITE_FILE="/etc/nginx/sites-available/pauk-platform"
+readonly STATE_FILE="/var/lib/vpn-platform/self-hosted-bootstrap.json"
+
+DOMAIN=""
+ADMIN_USER="owner"
+CONTACT_EMAIL=""
+BEHIND_PROXY="no"
+BOOTSTRAP_DIR=""
+HTTP_CONFIG=""
+TLS_CONFIG=""
+
+fail() { printf 'PAUK_INSTALL_FAILED: %s\n' "$1" >&2; exit 1; }
+usage() {
+  cat <<'EOF'
+Usage: install-pauk.sh --domain panel.example.com --email owner@example.com [--admin-user owner] [--behind-proxy]
+
+Installer build 0.1.155; installs PAUK Control Plane 0.1.150 / Web 0.12.71 on a clean Ubuntu 24.04 amd64 host.
+Requires DNS to point to this server, inbound TCP ports 80 and 443, and a terminal.
+EOF
+}
+
+while (($#)); do
+  case "$1" in
+    --domain) (($# >= 2)) || fail "missing value for --domain"; DOMAIN="$2"; shift 2 ;;
+    --email) (($# >= 2)) || fail "missing value for --email"; CONTACT_EMAIL="$2"; shift 2 ;;
+    --admin-user) (($# >= 2)) || fail "missing value for --admin-user"; ADMIN_USER="$2"; shift 2 ;;
+    --behind-proxy) BEHIND_PROXY="yes"; shift ;;
+    -h|--help) usage; exit 0 ;;
+    *) fail "unknown argument" ;;
+  esac
+done
+
+[[ $EUID -eq 0 ]] || fail "run as root, for example: curl ... | sudo bash -s -- --domain panel.example.com --email owner@example.com"
+[[ -r /dev/tty && -w /dev/tty ]] || fail "run from an interactive terminal so the owner password can be entered securely"
+if [[ -z $DOMAIN ]]; then
+  read -r -p "Panel domain (for example panel.example.com): " DOMAIN </dev/tty
+fi
+if [[ -z $CONTACT_EMAIL ]]; then
+  read -r -p "Email for the HTTPS certificate: " CONTACT_EMAIL </dev/tty
+fi
+
+[[ $DOMAIN =~ ^[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$ ]] || fail "domain must be a public DNS name without a path or wildcard"
+[[ $CONTACT_EMAIL =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]] || fail "provide a valid email for Let's Encrypt"
+[[ $ADMIN_USER =~ ^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$ ]] || fail "admin username must use letters, digits, dot, underscore, or hyphen"
+
+exec 9>/run/lock/pauk-self-hosted-bootstrap.lock
+flock -n 9 || fail "another PAUK installer is already running"
+
+[[ -r /etc/os-release ]] || fail "Ubuntu 24.04 is required"
+# shellcheck disable=SC1091
+source /etc/os-release
+[[ ${ID:-} == ubuntu && ${VERSION_ID:-} == 24.04 ]] || fail "only Ubuntu 24.04 is supported"
+[[ $(uname -m) == x86_64 ]] || fail "only amd64 servers are supported"
+MEM_KB=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo)
+DISK_KB=$(df -Pk / | awk 'NR==2 {print $4}')
+# MemTotal excludes reserved/kernel memory. Accept a 4 GiB VPS with up to 512 MiB reserved.
+[[ $MEM_KB =~ ^[0-9]+$ && $MEM_KB -ge 3670016 ]] || fail "at least 4 GiB of installed RAM is required (3.5 GiB usable after kernel reservations)"
+[[ $DISK_KB =~ ^[0-9]+$ && $DISK_KB -ge 12582912 ]] || fail "at least 12 GiB of free disk space is required"
+
+if [[ -f $STATE_FILE ]]; then
+python3 - "$STATE_FILE" "$DOMAIN" "$RELEASE_VERSION" "$RELEASE_SHA256" "$ADMIN_USER" "$CONTACT_EMAIL" <<'PY'
+import json, os, pathlib, sys
+p=pathlib.Path(sys.argv[1])
+if p.is_symlink() or p.stat().st_uid != 0 or p.stat().st_mode & 0o077:
+    raise SystemExit('bootstrap state has unsafe ownership or permissions')
+d=json.loads(p.read_text())
+if d.get('domain') != sys.argv[2] or d.get('release_version') != sys.argv[3] or d.get('release_sha256') != sys.argv[4] or d.get('admin_user') != sys.argv[5] or d.get('contact_email') != sys.argv[6]:
+    raise SystemExit('existing PAUK bootstrap belongs to a different domain or release')
+PY
+  [[ -f /etc/vpn-platform/control-plane.env && -f /etc/vpn-platform/web.env ]] || fail "bootstrap state exists but service credentials are incomplete"
+else
+  for path in /opt/vpn-platform /etc/vpn-platform /var/lib/vpn-platform /var/backups/vpn-platform /var/www/vpn-platform-public "$SITE_FILE" /etc/nginx/sites-enabled/pauk-platform; do
+    [[ ! -e $path && ! -L $path ]] || fail "this host already contains PAUK or VPN Platform data; refusing to overwrite it"
+  done
+  if command -v docker >/dev/null 2>&1 && docker inspect "$DB_CONTAINER" >/dev/null 2>&1; then
+    fail "a database container named $DB_CONTAINER already exists"
+  fi
+  if command -v docker >/dev/null 2>&1; then
+    for volume in vpn-platform-postgres-data "$DB_VOLUME"; do
+      if docker volume inspect "$volume" >/dev/null 2>&1; then
+        fail "a PAUK database volume already exists; refusing to reuse it"
+      fi
+    done
+  fi
+  if [[ -d /etc/nginx/sites-enabled ]]; then
+    if grep -RIlF "server_name $DOMAIN;" /etc/nginx/sites-enabled 2>/dev/null | grep -q .; then
+      fail "another Nginx site already claims this domain"
+    fi
+  fi
+  if command -v ss >/dev/null 2>&1 && ss -ltnH | awk '{print $4}' | grep -Eq '(^|:)(80|443)$'; then
+    fail "TCP port 80 or 443 is already in use"
+  fi
+fi
+
+if [[ $BEHIND_PROXY != yes ]]; then
+  PUBLIC_IP=$(curl -4fsSL --max-time 15 https://api.ipify.org)
+  [[ $PUBLIC_IP =~ ^[0-9.]+$ ]] || fail "could not determine this server's public IPv4 address"
+  DNS_MATCH=no
+  while read -r answer _; do
+    [[ $answer == "$PUBLIC_IP" ]] && DNS_MATCH=yes
+  done < <(getent ahostsv4 "$DOMAIN" || true)
+  [[ $DNS_MATCH == yes ]] || fail "DNS for $DOMAIN must point to this server; use --behind-proxy only when a reverse proxy forwards ACME challenges here"
+fi
+
+BOOTSTRAP_DIR=$(mktemp -d /var/tmp/pauk-bootstrap.XXXXXX)
+chmod 0700 "$BOOTSTRAP_DIR"
+trap 'rm -rf -- "$BOOTSTRAP_DIR"' EXIT
+
+if [[ ! -f $STATE_FILE ]]; then
+  apt-get update
+  DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl docker.io docker-compose-v2 nginx certbot python3 xz-utils openssl util-linux libatomic1
+  systemctl enable --now docker
+  systemctl enable --now nginx
+
+  read -r -s -p "Initial owner password (at least 15 characters): " OWNER_PASSWORD </dev/tty
+  printf '\n' >/dev/tty
+  read -r -s -p "Repeat initial owner password: " OWNER_PASSWORD_CONFIRM </dev/tty
+  printf '\n' >/dev/tty
+  [[ ${#OWNER_PASSWORD} -ge 15 && ${#OWNER_PASSWORD} -le 1024 ]] || fail "owner password must contain 15 to 1024 bytes"
+  [[ $OWNER_PASSWORD == "$OWNER_PASSWORD_CONFIRM" ]] || fail "owner passwords do not match"
+  OWNER_PASSWORD_HASH=$(printf '%s' "$OWNER_PASSWORD" | python3 -c 'import base64,hashlib,os,sys; p=sys.stdin.buffer.read(); s=os.urandom(16); k=hashlib.scrypt(p,salt=s,n=16384,r=8,p=1,dklen=64); e=lambda b:base64.urlsafe_b64encode(b).rstrip(b"=").decode(); print(e(s)+":"+e(k))')
+  unset OWNER_PASSWORD OWNER_PASSWORD_CONFIRM
+
+  NODE_DIR="/usr/local/lib/nodejs/node-v${NODE_VERSION}-linux-x64"
+  # The installer uses umask 077 for generated credentials. Restore safe read/execute
+  # permissions on the public Node runtime so the unprivileged Web service can start.
+  install -d -o root -g root -m 0755 /usr/local/lib/nodejs
+  if [[ ! -x $NODE_DIR/bin/node ]]; then
+    NODE_ARCHIVE="$BOOTSTRAP_DIR/node-v${NODE_VERSION}-linux-x64.tar.xz"
+    curl --http1.1 -fsSL --retry 3 --retry-all-errors --retry-delay 2 --connect-timeout 15 --max-time 900 "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" -o "$NODE_ARCHIVE"
+    echo "$NODE_TARBALL_SHA256  $NODE_ARCHIVE" | sha256sum -c -
+    install -d -o root -g root -m 0755 "$NODE_DIR"
+    tar -xJf "$NODE_ARCHIVE" --strip-components=1 -C "$NODE_DIR"
+  fi
+  [[ -d $NODE_DIR/bin ]] || fail "verified Node.js distribution is incomplete"
+  chown -R root:root "$NODE_DIR"
+  chmod -R a+rX "$NODE_DIR"
+  chmod 0755 /usr/local/lib/nodejs "$NODE_DIR" "$NODE_DIR/bin" "$NODE_DIR/bin/node"
+  for name in node npm npx; do
+    target="$NODE_DIR/bin/$name"
+    link="/usr/local/bin/$name"
+    [[ -x $target ]] || fail "verified Node.js distribution is incomplete"
+    if [[ -e $link || -L $link ]]; then
+      [[ $(readlink -f "$link") == $(readlink -f "$target") ]] || fail "$link exists and points to a different installation"
+    else
+      ln -s "$target" "$link"
+    fi
+  done
+  [[ $(/usr/local/bin/node --version) == "v${NODE_VERSION}" ]] || fail "Node.js version check failed"
+  export PATH="/usr/local/bin:$PATH"
+
+  POSTGRES_PASSWORD=$(openssl rand -hex 32)
+  CONTROL_TOKEN=$(openssl rand -hex 48)
+  WEB_SECRET=$(openssl rand -hex 32)
+  SUBSCRIPTION_SIGNING_KEY=$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '=')
+  WEBHOOK_ENCRYPTION_KEY=$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '=')
+  [[ ${#SUBSCRIPTION_SIGNING_KEY} -eq 43 && ${#WEBHOOK_ENCRYPTION_KEY} -eq 43 ]] || fail "could not generate signing keys"
+  install -d -o root -g root -m 0700 /etc/vpn-platform
+  printf 'POSTGRES_DB=vpnplatform\nPOSTGRES_USER=vpnplatform\nPOSTGRES_PASSWORD=%s\n' "$POSTGRES_PASSWORD" > /etc/vpn-platform/postgres-runtime.env
+  printf 'LISTEN_ADDR=127.0.0.1:8080\nADMIN_TOKEN=%s\nDATABASE_URL=postgres://vpnplatform:%s@127.0.0.1:5432/vpnplatform?sslmode=disable\nSUBSCRIPTION_SIGNING_KEY=%s\nWEBHOOK_ENCRYPTION_KEY=%s\n' "$CONTROL_TOKEN" "$POSTGRES_PASSWORD" "$SUBSCRIPTION_SIGNING_KEY" "$WEBHOOK_ENCRYPTION_KEY" > /etc/vpn-platform/control-plane.env
+  printf 'CONTROL_PLANE_URL=http://127.0.0.1:8080\nCONTROL_PLANE_ADMIN_TOKEN=%s\nWEB_SESSION_SECRET=%s\nWEB_ADMIN_USER=%s\nWEB_ADMIN_PASSWORD_HASH=%s\nVPN_PLATFORM_PUBLIC_URL=https://%s\n' "$CONTROL_TOKEN" "$WEB_SECRET" "$ADMIN_USER" "$OWNER_PASSWORD_HASH" "$DOMAIN" > /etc/vpn-platform/web.env
+  chmod 0600 /etc/vpn-platform/*.env
+  unset POSTGRES_PASSWORD CONTROL_TOKEN WEB_SECRET SUBSCRIPTION_SIGNING_KEY WEBHOOK_ENCRYPTION_KEY OWNER_PASSWORD_HASH
+
+  mkdir -p /var/lib/vpn-platform
+  install -d -o root -g root -m 0700 /var/lib/vpn-platform/operations
+  [[ ! -L /var/backups/vpn-platform && ! -L /var/backups/vpn-platform/managed ]] || fail "managed backup path must not be a symlink"
+  install -d -o root -g root -m 0700 /var/backups/vpn-platform/managed
+  python3 - "$STATE_FILE" "$DOMAIN" "$RELEASE_VERSION" "$RELEASE_SHA256" "$ADMIN_USER" "$CONTACT_EMAIL" <<'PY'
+import json, os, pathlib, sys, tempfile
+p=pathlib.Path(sys.argv[1]); p.parent.mkdir(mode=0o700,parents=True,exist_ok=True)
+data={'format':1,'domain':sys.argv[2],'release_version':sys.argv[3],'release_sha256':sys.argv[4],'admin_user':sys.argv[5],'contact_email':sys.argv[6]}
+fd,name=tempfile.mkstemp(prefix='.self-hosted-bootstrap-',dir=p.parent)
+with os.fdopen(fd,'w') as f:
+    json.dump(data,f,sort_keys=True); f.write('\n'); f.flush(); os.fsync(f.fileno())
+os.chmod(name,0o600); os.replace(name,p)
+PY
+fi
+
+export PATH="/usr/local/bin:$PATH"
+[[ $(/usr/local/bin/node --version) == "v${NODE_VERSION}" ]] || fail "required Node.js runtime is unavailable"
+systemctl enable --now docker nginx
+
+[[ -f /etc/vpn-platform/postgres-runtime.env && ! -L /etc/vpn-platform/postgres-runtime.env ]] || fail "PostgreSQL credentials are unavailable"
+docker compose version >/dev/null
+# Operator configuration lives outside application folders replaced by releases.
+python3 - "$POSTGRES_COMPOSE" "$POSTGRES_IMAGE" "$DB_VOLUME" "$DOMAIN" <<'PY'
+import json,os,pathlib,sys
+p=pathlib.Path(sys.argv[1]);image,volume,domain=sys.argv[2:]
+environment=pathlib.Path('/etc/vpn-platform/postgres-runtime.env')
+if environment.is_symlink() or environment.stat().st_uid!=0 or environment.stat().st_mode&0o077:raise SystemExit('PostgreSQL credentials have unsafe ownership or permissions')
+model={
+  'name':'pauk-selfhost',
+  'services':{'postgres':{
+    'image':image,'container_name':'vpn-platform-postgres','restart':'unless-stopped',
+    'env_file':['/etc/vpn-platform/postgres-runtime.env'],
+    'ports':[{'target':5432,'published':'5432','host_ip':'127.0.0.1','protocol':'tcp'}],
+    'volumes':[{'type':'volume','source':'database','target':'/var/lib/postgresql'}],
+    'labels':{'org.pauk.self-hosted-domain':domain,'org.pauk.postgresql-major':'18'},
+  }},
+  'volumes':{'database':{'external':True,'name':volume}},
+}
+if p.is_symlink():raise SystemExit('PostgreSQL runtime definition must not be a symlink')
+if p.exists():
+    if p.stat().st_uid!=0 or p.stat().st_mode&0o077:raise SystemExit('PostgreSQL runtime definition has unsafe permissions')
+    if json.loads(p.read_text())!=model:raise SystemExit('PostgreSQL runtime definition changed; refusing to overwrite operator settings')
+else:
+    fd=os.open(p,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+    with os.fdopen(fd,'w') as f:json.dump(model,f,sort_keys=True);f.write('\n');f.flush();os.fsync(f.fileno())
+PY
+docker compose -p pauk-selfhost -f "$POSTGRES_COMPOSE" config --quiet
+if ! docker inspect "$DB_CONTAINER" >/dev/null 2>&1; then
+  if docker volume inspect "$DB_VOLUME" >/dev/null 2>&1; then
+    VOLUME_DOMAIN=$(docker volume inspect --format '{{ index .Labels "org.pauk.self-hosted-domain" }}' "$DB_VOLUME")
+    [[ $VOLUME_DOMAIN == "$DOMAIN" ]] || fail "database volume belongs to another installation"
+  else
+    docker volume create --label "org.pauk.self-hosted-domain=$DOMAIN" --label org.pauk.postgresql-major=18 "$DB_VOLUME" >/dev/null
+  fi
+  docker compose -p pauk-selfhost -f "$POSTGRES_COMPOSE" up --detach --no-deps postgres >/dev/null
+else
+  python3 - "$DB_CONTAINER" "$POSTGRES_IMAGE" "$DB_VOLUME" "$DOMAIN" <<'PY'
+import json,subprocess,sys
+container,image,volume,domain=sys.argv[1:]
+d=json.loads(subprocess.check_output(['docker','inspect',container],text=True))[0]
+if not d['State']['Running'] or d['Config']['Image']!=image:raise SystemExit('PostgreSQL runtime changed; refusing to overwrite it')
+if d['Config'].get('Labels',{}).get('org.pauk.self-hosted-domain')!=domain:raise SystemExit('PostgreSQL container belongs to another installation')
+mounts=d['Mounts']
+if len(mounts)!=1 or mounts[0]['Type']!='volume' or mounts[0]['Name']!=volume or mounts[0]['Destination']!='/var/lib/postgresql':raise SystemExit('PostgreSQL volume layout changed')
+if d['HostConfig']['PortBindings']!={'5432/tcp':[{'HostIp':'127.0.0.1','HostPort':'5432'}]}:raise SystemExit('PostgreSQL binding changed')
+PY
+fi
+for attempt in $(seq 1 60); do
+  # TCP readiness excludes the temporary initdb postmaster.
+  if docker exec "$DB_CONTAINER" pg_isready -h 127.0.0.1 -U vpnplatform -d vpnplatform >/dev/null 2>&1; then break; fi
+  [[ $attempt -lt 60 ]] || fail "PostgreSQL did not become ready"
+  sleep 2
+done
+DB_VERSION=$(docker exec "$DB_CONTAINER" psql -X -qAt -U vpnplatform -d vpnplatform -v ON_ERROR_STOP=1 -c 'SHOW server_version;')
+[[ $DB_VERSION == 18.6* ]] || fail "unexpected PostgreSQL version"
+[[ $(docker exec "$DB_CONTAINER" psql -X -qAt -U vpnplatform -d vpnplatform -v ON_ERROR_STOP=1 -c 'SHOW data_checksums;') == on ]] || fail "PostgreSQL data checksums are disabled"
+
+BUNDLE="$BOOTSTRAP_DIR/control-plane.tgz"
+TOOL="$BOOTSTRAP_DIR/platform-lifecycle.py"
+if [[ ! -f $BUNDLE ]]; then
+  curl --http1.1 -fsSL --retry 3 --retry-all-errors --retry-delay 2 --connect-timeout 15 --max-time 900 "$RELEASE_ORIGIN/vpn-panel-control-plane-linux-amd64.tgz" -o "$BUNDLE"
+fi
+[[ $(sha256sum "$BUNDLE" | awk '{print $1}') == "$RELEASE_SHA256" ]] || fail "release bundle checksum mismatch"
+if [[ ! -f $TOOL ]]; then
+  tar -xzf "$BUNDLE" -C "$BOOTSTRAP_DIR" payload/source/scripts/platform-lifecycle.py
+  install -m 0700 "$BOOTSTRAP_DIR/payload/source/scripts/platform-lifecycle.py" "$TOOL"
+fi
+python3 "$TOOL" verify --bundle "$BUNDLE" --sha256 "$RELEASE_SHA256"
+
+install -d -o root -g root -m 0755 /usr/local/libexec/vpn-platform
+
+if [[ -f /var/lib/vpn-platform/lifecycle-state.json ]]; then
+  if python3 "$TOOL" status > "$BOOTSTRAP_DIR/lifecycle-status.json" 2>/dev/null && \
+     python3 - "$BOOTSTRAP_DIR/lifecycle-status.json" "$RELEASE_VERSION" <<'PY'
+import json,sys
+d=json.load(open(sys.argv[1])); raise SystemExit(0 if d.get('version')==sys.argv[2] and d.get('core_services',{}).get('vpn-platform-control-plane.service') and d.get('core_services',{}).get('vpn-platform-web.service') else 1)
+PY
+  then
+    echo "PAUK_APPLICATION_ALREADY_INSTALLED=$RELEASE_VERSION"
+  else
+    python3 "$TOOL" install --bundle "$BUNDLE" --sha256 "$RELEASE_SHA256"
+  fi
+else
+  python3 "$TOOL" install --bundle "$BUNDLE" --sha256 "$RELEASE_SHA256"
+fi
+
+# Native node downloads are served by this installation, without an external proxy.
+NODE_ASSETS="$BOOTSTRAP_DIR/node-assets.tgz"
+curl --proto '=https' --proto-redir '=https' --tlsv1.2 --http1.1 -fsSL --retry 3 --retry-all-errors --retry-delay 2 --connect-timeout 15 --max-time 900 "$RELEASE_ORIGIN/vpn-panel-node-assets.tgz" -o "$NODE_ASSETS"
+echo "$NODE_ASSETS_SHA256  $NODE_ASSETS" | sha256sum -c -
+python3 - "$NODE_ASSETS" <<'PY_NODE_ASSETS'
+import hashlib, json, os
+from pathlib import Path, PurePosixPath
+import stat, tarfile, tempfile
+expected = json.loads(r'@NODE_ASSET_MANIFEST@')
+root = Path('/var/www/vpn-platform-public')
+for parent in reversed(root.parents):
+    if not parent.exists():
+        parent.mkdir(mode=0o755)
+        parent.chmod(0o755)
+    info = parent.lstat()
+    if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:
+        raise SystemExit('public asset parent is not protected and root-owned')
+    if not info.st_mode & 0o001:
+        raise SystemExit('public asset parent must be traversable by the web server')
+if not root.exists():
+    root.mkdir(mode=0o755)
+root_info = root.lstat()
+if not stat.S_ISDIR(root_info.st_mode) or root_info.st_uid != 0 or root_info.st_mode & 0o022:
+    raise SystemExit('public asset directory is unsafe')
+os.chmod(root, 0o755)
+with tarfile.open(__import__('sys').argv[1], 'r:gz') as archive:
+    entries = archive.getmembers()
+    if len(entries) != len(expected) or {e.name for e in entries} != set(expected):
+        raise SystemExit('node asset manifest is incomplete')
+    for entry in entries:
+        path = PurePosixPath(entry.name)
+        if not entry.isfile() or path.is_absolute() or '..' in path.parts or str(path) != entry.name or entry.size > 64*1024**2:
+            raise SystemExit('unsafe node asset member')
+        raw = archive.extractfile(entry).read()
+        record = expected[entry.name]
+        if len(raw) != record['bytes'] or hashlib.sha256(raw).hexdigest() != record['sha256']:
+            raise SystemExit('node asset checksum mismatch')
+        destination = root.joinpath(*path.parts)
+        current = root
+        for part in path.parts[:-1]:
+            current = current / part
+            if not current.exists():
+                current.mkdir(mode=0o755)
+            info = current.lstat()
+            if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:
+                raise SystemExit('unsafe node asset parent')
+            os.chmod(current, 0o755)
+        if destination.exists() or destination.is_symlink():
+            info = destination.lstat()
+            if not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022 or hashlib.sha256(destination.read_bytes()).hexdigest() != record['sha256']:
+                raise SystemExit('refusing to replace an unmanaged node asset')
+            os.chmod(destination, 0o644)
+            continue
+        descriptor, temporary = tempfile.mkstemp(dir=destination.parent, prefix='.pauk-')
+        try:
+            with os.fdopen(descriptor, 'wb') as output:
+                output.write(raw)
+                output.flush()
+                os.fsync(output.fileno())
+            os.chmod(temporary, 0o644)
+            os.replace(temporary, destination)
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
+PY_NODE_ASSETS
+
+install -d -o root -g root -m 0755 /var/www/letsencrypt/.well-known/acme-challenge
+HTTP_CONFIG="$BOOTSTRAP_DIR/nginx-http.conf"
+TLS_CONFIG="$BOOTSTRAP_DIR/nginx-tls.conf"
+SITE_STATE="missing"
+cat > "$HTTP_CONFIG" <<EOF
+# PAUK self-hosted site: $DOMAIN; managed by the versioned installer.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name $DOMAIN;
+    location ^~ /.well-known/acme-challenge/ { root /var/www/letsencrypt; }
+    location / { return 301 https://\$host\$request_uri; }
+}
+EOF
+if [[ -f $SITE_FILE ]]; then
+  if cmp -s "$HTTP_CONFIG" "$SITE_FILE"; then SITE_STATE="http"
+  elif grep -Fq "PAUK self-hosted site: $DOMAIN; managed by the versioned installer." "$SITE_FILE"; then SITE_STATE="tls"
+  else fail "Nginx site file exists and is not managed by this installer"; fi
+else
+  install -m 0644 "$HTTP_CONFIG" "$SITE_FILE"
+  SITE_STATE="http"
+fi
+ENABLED="/etc/nginx/sites-enabled/pauk-platform"
+if [[ -e $ENABLED || -L $ENABLED ]]; then
+  [[ $(readlink -f "$ENABLED") == "$SITE_FILE" ]] || fail "Nginx enabled-site name is already used"
+else
+  ln -s "$SITE_FILE" "$ENABLED"
+fi
+nginx -t
+systemctl reload nginx
+
+CERT_DIR="/etc/letsencrypt/live/$DOMAIN"
+if [[ ! -s $CERT_DIR/fullchain.pem || ! -s $CERT_DIR/privkey.pem ]]; then
+  certbot certonly --non-interactive --agree-tos --email "$CONTACT_EMAIL" \
+    --webroot -w /var/www/letsencrypt -d "$DOMAIN"
+else
+  openssl x509 -in "$CERT_DIR/fullchain.pem" -checkhost "$DOMAIN" -noout >/dev/null || fail "existing certificate does not match $DOMAIN"
+  openssl x509 -in "$CERT_DIR/fullchain.pem" -checkend 2592000 -noout >/dev/null || fail "existing certificate expires within 30 days"
+fi
+
+cat > "$TLS_CONFIG" <<EOF
+map \$http_user_agent \$pauk_subscription_app {
+    default 0;
+    ~*(Happ|Hiddify|INCY|v2RayTun|v2rayNG|v2rayN|Neko|Clash|Mihomo|sing-box|Stash|Shadowrocket) 1;
+}
+
+map "\$uri|\$arg_format|\$http_accept|\$http_rsc|\$pauk_subscription_app|\$http_x_hwid" \$pauk_subscription_upstream {
+    default 127.0.0.1:8080;
+    ~^/sub/?\| 127.0.0.1:3000;
+    ~^/sub/[A-Za-z0-9_-]+/?\|\|[^|]*text/html[^|]*\|[^|]*\|0\|\$ 127.0.0.1:3000;
+    ~^/sub/[A-Za-z0-9_-]+/?\|\|[^|]*\|1\|0\|\$ 127.0.0.1:3000;
+}
+
+# PAUK self-hosted site: $DOMAIN; managed by the versioned installer.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name $DOMAIN;
+    location ^~ /.well-known/acme-challenge/ { root /var/www/letsencrypt; }
+    location / { return 301 https://\$host\$request_uri; }
+}
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name $DOMAIN;
+    server_tokens off;
+    ssl_certificate $CERT_DIR/fullchain.pem;
+    ssl_certificate_key $CERT_DIR/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    client_max_body_size 30m;
+
+    location = /healthz {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+    }
+    location ^~ /api/v1/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_read_timeout 180s;
+    }
+    location ^~ /install/ {
+        limit_except GET HEAD { deny all; }
+        root /var/www/vpn-platform-public;
+        try_files \$uri =404;
+        autoindex off;
+        add_header X-Content-Type-Options nosniff;
+    }
+    location ^~ /artifacts/ {
+        limit_except GET HEAD { deny all; }
+        root /var/www/vpn-platform-public;
+        try_files \$uri =404;
+        autoindex off;
+        add_header X-Content-Type-Options nosniff;
+    }
+    location ^~ /sub/api/ {
+        access_log off;
+        client_max_body_size 3m;
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 35s;
+        proxy_send_timeout 35s;
+        proxy_buffering off;
+        proxy_hide_header Server;
+        add_header Cache-Control "private, no-store" always;
+        add_header Referrer-Policy "no-referrer" always;
+    }
+
+    location ^~ /sub/ {
+        access_log off;
+
+        proxy_pass http://\$pauk_subscription_upstream;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+
+        proxy_buffering off;
+        proxy_request_buffering off;
+
+        proxy_hide_header Server;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 180s;
+    }
+}
+EOF
+
+if ! cmp -s "$TLS_CONFIG" "$SITE_FILE"; then
+  if [[ $SITE_STATE == http ]] && cmp -s "$HTTP_CONFIG" "$SITE_FILE"; then
+    install -m 0644 "$TLS_CONFIG" "$SITE_FILE.new"
+    mv -f "$SITE_FILE.new" "$SITE_FILE"
+  elif [[ $SITE_STATE == tls ]]; then
+    fail "the existing managed Nginx TLS configuration has been changed; refusing to overwrite it"
+  else
+    fail "refusing to replace an unmanaged Nginx configuration"
+  fi
+fi
+nginx -t
+systemctl reload nginx
+
+HOOK_DIR="/etc/letsencrypt/renewal-hooks/deploy"
+install -d -o root -g root -m 0755 "$HOOK_DIR"
+HOOK="$HOOK_DIR/90-reload-pauk-nginx"
+if [[ ! -e $HOOK ]]; then
+  cat > "$HOOK" <<'EOF'
+#!/bin/sh
+exec /usr/bin/systemctl reload nginx
+EOF
+  chmod 0755 "$HOOK"
+fi
+systemctl enable --now certbot.timer
+
+if command -v ufw >/dev/null 2>&1 && ufw status | grep -q '^Status: active'; then
+  ufw allow 80/tcp comment 'PAUK HTTPS certificate validation'
+  ufw allow 443/tcp comment 'PAUK web panel'
+fi
+
+curl -fsSL --max-time 20 -o /dev/null -w 'PAUK_LOGIN_HTTP=%{http_code}\n' "https://$DOMAIN/login" | grep -qx 'PAUK_LOGIN_HTTP=200' || fail "public login page did not pass the HTTPS smoke test"
+curl -fsSL --max-time 15 "https://$DOMAIN/healthz" | python3 -c 'import json,sys; d=json.load(sys.stdin); raise SystemExit(0 if d.get("status")=="ok" else 1)' || fail "public Control Plane health check failed"
+
+printf 'PAUK_INSTALL_COMPLETE=YES\n'
+printf 'PANEL_URL=https://%s\n' "$DOMAIN"
+printf 'OWNER_LOGIN=%s\n' "$ADMIN_USER"
+printf 'OWNER_PASSWORD=the password entered in the terminal\n'
+printf 'REQUIRED_INBOUND_PORTS=80/tcp,443/tcp\n'

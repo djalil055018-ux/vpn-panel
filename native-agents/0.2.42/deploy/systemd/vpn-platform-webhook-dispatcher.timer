@@ -1,0 +1,8 @@
+[Unit]
+Description=Dispatch VPN billing webhooks every 15 seconds
+[Timer]
+OnCalendar=*-*-* *:*:00/15 UTC
+AccuracySec=1
+Persistent=true
+[Install]
+WantedBy=timers.target

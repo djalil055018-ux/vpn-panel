@@ -1,0 +1,46 @@
+{
+  "artifacts/node-agent/0.2.39/linux-amd64/vpn-node-agent": {
+    "sha256": "41c744f44b62ee9b58d1961f0609ddf60de419db3ba71271fd13aa16f615db8b",
+    "bytes": 10403964
+  },
+  "artifacts/node-agent/0.2.42/linux-amd64/vpn-node-agent": {
+    "sha256": "81cd3db30b198795a634e626471053774ad567b852a19b52a4d32f6675fa67f3",
+    "bytes": 10485884
+  },
+  "artifacts/node-agent/0.2.43/linux-amd64/vpn-node-agent": {
+    "sha256": "44434e3f54508e4e56eb3b5cdaa0fb1d59f6a189f9cbe5f64350cac78a022adf",
+    "bytes": 10489980
+  },
+  "install/vpn-node-tool-v0.2.39.py": {
+    "sha256": "aec3ab490453f0a0808c40e1be848e64b7b63538495ec8c8af3c5823b16b6288",
+    "bytes": 54222
+  },
+  "install/vpn-node-tool-v0.2.42.py": {
+    "sha256": "f6e6e1275eab3af6af33edee4ac33970b244443189a386339807b714a8d02b9d",
+    "bytes": 62500
+  },
+  "install/vpn-node-tool-v0.2.43.py": {
+    "sha256": "3184251689e75751c1a9edd8bdd5bab189cea87cbf6a163ca6e4b736fa761873",
+    "bytes": 62500
+  },
+  "artifacts/cores/amneziawg/3.1.20260828-pauk.1/linux-amd64.tar.gz": {
+    "sha256": "1fc10912a24cc14178f3937552bd8c6a9d6489d8462f0884053a9ea3091e886a",
+    "bytes": 3050786
+  },
+  "artifacts/pptp/1.14.0-platform.1/linux-amd64/pptp-accel-1.14.0-platform.1-linux-amd64.tar.gz": {
+    "sha256": "d6960405b74030750e7b835e3dafef76e26f1d2748a4d347578204fabcdd08a6",
+    "bytes": 2100301
+  },
+  "artifacts/openvpn/2.6.19-0ubuntu0.24.04.4/linux-amd64/openvpn.deb": {
+    "sha256": "d288c3789e825b140258da3e2c40bdb8f07820b8e69ca6480b619b83af8f108a",
+    "bytes": 687736
+  },
+  "install/vpn-agent-updater-v0.1.0.py": {
+    "sha256": "485a34aca4630548f2930f24a0f7ae73cf910611749bcd649a0126597cdb7fde",
+    "bytes": 11641
+  },
+  "install/install-vpn-agent-updater-v0.1.0.py": {
+    "sha256": "6298b66dc56255cfad6530307db50a9d320c74e0da511b39c119fffa6505d370",
+    "bytes": 4875
+  }
+}

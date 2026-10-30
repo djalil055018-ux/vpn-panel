@@ -1,0 +1,10 @@
+[Unit]
+Description=VPN Platform Expired Rollout Plan Sweeper Timer
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=5min
+RandomizedDelaySec=30s
+AccuracySec=30s
+Unit=vpn-platform-rollout-sweeper.service
+[Install]
+WantedBy=timers.target

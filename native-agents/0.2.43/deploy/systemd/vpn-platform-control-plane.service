@@ -1,0 +1,25 @@
+[Unit]
+Description=VPN Platform Control Plane
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=vpnplatform
+Group=vpnplatform
+EnvironmentFile=/etc/vpn-platform/control-plane.env
+ExecStart=/opt/vpn-platform/bin/control-plane
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/vpn-platform
+CapabilityBoundingSet=
+AmbientCapabilities=
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=multi-user.target

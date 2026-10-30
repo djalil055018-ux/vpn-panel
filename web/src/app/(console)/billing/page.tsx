@@ -1,0 +1,11 @@
+import { randomUUID } from "node:crypto";
+import { requireSession } from "@/lib/auth";
+import { getTenants, getBillingOffers, getBillingInvoices, getBillingIntegrationStatus, getAccessPlans, getVPNClients } from "@/lib/control-plane";
+import { BillingManagement } from "@/components/billing-management";
+export const dynamic = "force-dynamic";
+async function load(tenant: string) { const [offers, invoices, integration, plans, clients] = await Promise.all([getBillingOffers(tenant), getBillingInvoices(tenant), getBillingIntegrationStatus(), getAccessPlans(tenant), getVPNClients(tenant)]); return { offers, invoices, integration, plans: plans.map(p => ({ id: p.id, name: p.name })), clients: clients.map(c => ({ id: c.id, name: c.name })), requestKey: randomUUID() }; }
+export default async function BillingPage({ searchParams }: { searchParams: Promise<{ tenant?: string }> }) {
+  await requireSession();const [tenants, query] = await Promise.all([getTenants(), searchParams]);const tenant = tenants.find(t => t.id === query.tenant) ?? tenants[0];if (!tenant) return <section className="panel empty">Сначала создайте владельца.</section>;
+  let data = null;try { data = await load(tenant.id); } catch { /* Safe unavailable state. */ }
+  return <><header className="page-header"><div><h1>Биллинг</h1><p>Предложения, счета и доступ на оплаченный срок.</p></div></header><form className="plan-tenant" method="get"><label>Владелец<select name="tenant" defaultValue={tenant.id}>{tenants.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}</select></label><button className="button ghost">Показать</button></form>{data ? <><section className="panel portal-card"><h2>Подтверждение оплаты</h2><p>Оплату можно подтвердить вручную после получения денег{data.integration.payment_webhook_enabled ? " или через подписанное событие интеграции" : ""}. Платёжный провайдер и автоматическое списание денег пока не подключены.</p><p className="plan-muted">Оплаченный период не заменяет ручные назначения. Отключение клиента и его общий срок доступа сохраняют приоритет.</p></section><BillingManagement key={tenant.id} tenant={tenant.id} {...data} /></> : <div className="alert error">Не удалось загрузить биллинг. Обновите страницу позже.</div>}</>;
+}

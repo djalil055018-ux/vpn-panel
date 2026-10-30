@@ -1,0 +1,29 @@
+[Unit]
+Description=VPN Infrastructure Platform Web UI
+After=network-online.target vpn-platform-control-plane.service
+Wants=network-online.target
+Requires=vpn-platform-control-plane.service
+
+[Service]
+Type=simple
+User=vpnplatform-web
+Group=vpnplatform-web
+WorkingDirectory=/opt/vpn-platform/web/standalone
+Environment=NODE_ENV=production
+Environment=NEXT_TELEMETRY_DISABLED=1
+Environment=HOSTNAME=127.0.0.1
+Environment=PORT=3000
+EnvironmentFile=/etc/vpn-platform/web.env
+ExecStart=/usr/local/bin/node /opt/vpn-platform/web/standalone/server.js
+Restart=on-failure
+RestartSec=3s
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+UMask=027
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

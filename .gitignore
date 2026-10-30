@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+__pycache__/
+*.pyc
+*.log
+/dist/
+/build/
+/runtime/
+/backups/

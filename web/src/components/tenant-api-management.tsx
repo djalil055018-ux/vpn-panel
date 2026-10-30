@@ -1,0 +1,25 @@
+"use client";
+
+import { useActionState, useState } from "react";
+import { useFormStatus } from "react-dom";
+import { tenantCredentialAction } from "@/app/tenant-api-actions";
+import type { TenantAPICredential } from "@/lib/control-plane";
+
+function Submit({ label, danger = false }: { label: string; danger?: boolean }) { const { pending } = useFormStatus(); return <button className={`button ${danger ? "danger" : "primary"}`} disabled={pending}>{pending ? "Сохранение…" : label}</button>; }
+function OneTimeKey({ token }: { token: string }) {
+  const [visible, setVisible] = useState(false), [hidden, setHidden] = useState(false), [copied, setCopied] = useState(false);
+  if (hidden) return <p className="plan-muted">Значение ключа скрыто. При потере создайте новый и отзовите старый.</p>;
+  return <div className="credential-secret"><label>Новый ключ<input type={visible ? "text" : "password"} value={token} readOnly autoComplete="off" spellCheck={false} /></label><div className="credential-buttons"><button className="button ghost" type="button" onClick={() => setVisible(!visible)}>{visible ? "Скрыть значение" : "Показать значение"}</button><button className="button primary" type="button" onClick={async () => { try { await navigator.clipboard.writeText(token); setCopied(true); } catch { setCopied(false); setVisible(true); } }}>{copied ? "Скопировано" : "Копировать"}</button><button className="button ghost" type="button" onClick={() => setHidden(true)}>Я сохранил ключ</button></div></div>;
+}
+function Revoke({ tenant, id }: { tenant: string; id: string }) {
+  const [state, action] = useActionState(tenantCredentialAction, { ok: false, message: "" });
+  return <form action={action} className="credential-revoke"><input type="hidden" name="tenant_id" value={tenant} /><input type="hidden" name="credential_id" value={id} /><input type="hidden" name="operation" value="revoke" /><label className="plan-check"><input type="checkbox" name="confirm" value="yes" required /> Отозвать доступ</label><Submit label="Отозвать" danger />{state.message && <p role="status" className={state.ok ? "plan-feedback" : "plan-feedback error"}>{state.message}</p>}</form>;
+}
+function when(value: string | null) { return value ? new Intl.DateTimeFormat("ru-RU", { dateStyle: "medium", timeStyle: "short", timeZone: "Europe/Moscow" }).format(new Date(value)) : "Ещё не использовался"; }
+export function TenantAPIManagement({ tenant, credentials, at }: { tenant: string; credentials: TenantAPICredential[]; at: number }) {
+  const [state, action] = useActionState(tenantCredentialAction, { ok: false, message: "" });
+  return <>
+    <section className="panel"><div className="panel-header"><div><h2>Новый ключ</h2><p>Отдельный ключ для каждой интеграции. Доступ ограничен выбранным владельцем.</p></div></div><form action={action} className="plan-form"><input type="hidden" name="tenant_id" value={tenant} /><input type="hidden" name="operation" value="create" /><label>Название<input name="name" required maxLength={100} placeholder="Например, кабинет партнёра" /></label><label>Роль<select name="role" defaultValue="viewer"><option value="viewer">Просмотр</option><option value="operator">Управление доступом</option><option value="reseller">Партнёр</option></select></label><label>Срок действия<select name="days" defaultValue="30"><option value="7">7 дней</option><option value="30">30 дней</option><option value="90">90 дней</option><option value="365">1 год</option></select></label><p className="plan-muted">Просмотр: тарифы, клиенты, сервисы и счета. Управление: клиенты и сроки доступа, тарифы и назначения, выдача подписок и создание счетов. Партнёр: создание вложенных владельцев и выдача им ключей. Отзыв партнёрского ключа также закрывает выданные через него ключи. Изменение нод и серверных ключей недоступно.</p><Submit label="Создать ключ" />{state.message && <p role="status" className={state.ok ? "plan-feedback" : "plan-feedback error"}>{state.message}</p>}{state.token && <OneTimeKey key={state.token} token={state.token} />}</form></section>
+    <section className="panel"><div className="panel-header"><div><h2>Выданные ключи</h2><p>Значения ключей не хранятся в открытом виде. Время указано по Москве.</p></div></div><div className="credential-list">{credentials.length === 0 && <p className="plan-muted">Ключей пока нет.</p>}{credentials.map(credential => { const active = !credential.revoked_at && Date.parse(credential.expires_at) > at; return <article key={credential.id} className="credential-item"><div><h3>{credential.name}</h3><span className={active ? "operations-good" : "plan-muted"}>{credential.revoked_at ? "Отозван" : active ? "Действует" : "Срок истёк"} · {credential.role === "reseller" ? "Партнёр" : credential.role === "viewer" ? "Просмотр" : "Управление доступом"}</span><p>До {when(credential.expires_at)}</p><p>Последнее использование: {when(credential.last_used_at)}</p></div>{active && <Revoke tenant={tenant} id={credential.id} />}</article>; })}</div></section>
+  </>;
+}

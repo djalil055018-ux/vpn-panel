@@ -1,0 +1,9 @@
+[Unit]
+Description=VPN Platform Core Registry Upstream Sync Timer
+[Timer]
+OnCalendar=*-*-* 00,06,12,18:00:00
+RandomizedDelaySec=20min
+Persistent=true
+Unit=vpn-platform-core-sync.service
+[Install]
+WantedBy=timers.target

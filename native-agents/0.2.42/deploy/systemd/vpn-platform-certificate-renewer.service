@@ -1,0 +1,12 @@
+[Unit]
+Description=VPN Platform Certificate Auto-Renewal Scheduler
+After=network-online.target vpn-platform-control-plane.service
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/vpn-platform/control-plane.env
+ExecStart=/opt/vpn-platform/bin/certificate-renewer
+TimeoutStartSec=150
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict

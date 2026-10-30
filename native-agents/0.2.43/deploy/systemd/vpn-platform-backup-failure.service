@@ -1,0 +1,6 @@
+[Unit]
+Description=Record failed VPN Platform backup
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/vpn-platform/platform-backup.py control-plane failed
+TimeoutStartSec=60

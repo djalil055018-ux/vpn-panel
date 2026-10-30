@@ -1,0 +1,4 @@
+export type WebhookEndpoint = { id: string; tenant_id: string; name: string; url: string; events: string[]; enabled: boolean; created_at: string };
+export type WebhookDelivery = { id: string; endpoint_id: string; event_id: string; event_type: string; status: string; attempts: number; next_attempt_at: string; last_http_status: number | null; last_error: string | null; created_at: string; completed_at: string | null };
+export const webhookEvents = [{ value: "billing.invoice_paid", label: "Счёт оплачен" }, { value: "billing.invoice_voided", label: "Счёт аннулирован" }];
+export function webhookURL(value: string) { try { const u = new URL(value);return value.length <= 1000 && u.protocol === "https:" && !!u.hostname && !u.username && !u.password && !u.search && !u.hash && (!u.port || u.port === "443") && !/[\\\s]/.test(value); } catch { return false; } }

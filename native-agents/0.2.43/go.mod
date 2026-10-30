@@ -1,0 +1,24 @@
+module vpn-platform
+
+go 1.27
+
+require (
+	github.com/go-acme/lego/v5 v5.5.2
+	github.com/jackc/pgx/v5 v5.11.0
+	go.yaml.in/yaml/v3 v3.0.5
+	golang.org/x/crypto v0.57.0
+	golang.org/x/sys v0.48.0
+)
+
+require (
+	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.5 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
+	github.com/jackc/puddle/v2 v2.2.2 // indirect
+	github.com/miekg/dns v1.1.73 // indirect
+	golang.org/x/net v0.59.0 // indirect
+	golang.org/x/sync v0.23.0 // indirect
+	golang.org/x/text v0.42.0 // indirect
+	software.sslmate.com/src/go-pkcs12 v0.7.3 // indirect
+)

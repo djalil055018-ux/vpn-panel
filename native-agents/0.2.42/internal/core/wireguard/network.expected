@@ -1,0 +1,21 @@
+table inet vpn_platform_wg {
+	chain input {
+		type filter hook input priority -10; policy accept;
+		iifname "vpnnativewg" drop
+	}
+
+	chain forward {
+		type filter hook forward priority -10; policy accept;
+		iifname "vpnnativewg" ip daddr { 0.0.0.0/8, 10.0.0.0/8, 100.64.0.0/10, 127.0.0.0/8, 169.254.0.0/16, 172.16.0.0/12, 192.0.0.0/24, 192.0.2.0/24, 192.168.0.0/16, 198.18.0.0/15, 198.51.100.0/24, 203.0.113.0/24, 224.0.0.0/3 } drop
+		iifname "vpnnativewg" ip6 daddr != 2000::/3 drop
+		iifname "vpnnativewg" ip6 daddr 2001:db8::/32 drop
+		iifname "vpnnativewg" accept
+		oifname "vpnnativewg" ct state 0x2,0x4 accept
+		oifname "vpnnativewg" drop
+	}
+
+	chain postrouting {
+		type nat hook postrouting priority 100; policy accept;
+		iifname "vpnnativewg" masquerade
+	}
+}

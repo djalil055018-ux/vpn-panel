@@ -1,0 +1,345 @@
+{
+  "source_revisions": {
+    "v2fly/domain-list-community": "c6adacf29cc4fb05e04651fcf03e00989ef9f797",
+    "Loyalsoldier/geoip": "49cb9d1346e6ddd709effe93fd2075aba34de0fe"
+  },
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/autoru",
+      "sha256": "6d35566806aa46c27bcd4aeab397252a9751560a3493eaa741c2f39d3fdb324d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/aviasales",
+      "sha256": "d73419bea444cf51aab4ec30d907595dc0d6db47178da42b355cd98ca485d2d4"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/avito",
+      "sha256": "5ed76be7508998c28bf11516a3c0ff6ea2c326063f940ed58ed2eb934288f810"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/beget",
+      "sha256": "09c756102b990214816c1f89779dc00c7f1fdb251769258536274589f7ed485e"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/betboom",
+      "sha256": "d784019ddc4176501d5b7de6c179587a5849b02af69a208e41fe4b90d9f98707"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/carrotquest",
+      "sha256": "33f6f304ac588693ed0d8b6567d51faf771b569553748ee78e6dd831a9bb6a98"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-ai-ru",
+      "sha256": "3c2da35ac466ddfc64a0c4ebf772707b98695d470a3b4a2a9b3cf78d3f101750"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-bank-ru",
+      "sha256": "6f604c68a743f5c2e687c5be8ed2bdac5187a6b00d04cae54c34e0779936119b"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-betting-ru",
+      "sha256": "5c78f2e7b0b840e5e95610d4d5d504299e41a23eea031c48b05de130dc70418b"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-ecommerce-ru",
+      "sha256": "5bed6f2ffae477ec3f840b9dc00961516d4e2f6bb89809d665d18d841d81fcd5"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-education-ru",
+      "sha256": "0e9c60c50b2f161f49dc7d32b39c6b9b95b9ee0e417feda8934cabeb374c4d92"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-entertainment-ru",
+      "sha256": "fe16e9ef89de8f36cd441f97317eb95550483b935ba1d91ef638795a5c309dda"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-forums-ru",
+      "sha256": "49aef3f42545ec6c06d4bee957782a7114da5a1f90acc5e10367d37074b98069"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-gov-ru",
+      "sha256": "bf1184f81f5e1d368360e29e77d4138725ecdc67dd6d11ca6533cba3022efacb"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-media-ru",
+      "sha256": "b967cb4d30bc058032f291570c9511a6ee7839d1e4653c3b816fe8fb1822a212"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-medicine-ru",
+      "sha256": "908bfe125d061d064e6ecf37145c88ac99832f6e35d4b076b1232337d78a1450"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-retail-ru",
+      "sha256": "23054e1a4b2d2aa6dee73a96ce4a3ec33abeeec35ee7edc218d4ef969cea3cfe"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-ru",
+      "sha256": "62bc820e009a9e6d63d4a65d0bcef4bfcb2ce1e6adef921435fe31f5967a3c07"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-tech-media-ru",
+      "sha256": "ea0277b8fe5987ce734bc6c38cd0f15c1ddaecfada7d54ce64aa3eff566718cf"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/category-travel-ru",
+      "sha256": "99124c6015072389e417d04cc6dff1b3c7bfd5f205816bb0b8b9a5b043eb979c"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/cdek",
+      "sha256": "531173ad4282142368b51363b37e81f90bad90ef3c7d86bfd55097746e1bf57f"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/cian",
+      "sha256": "17f42773d6c87b5055c24ad03db60bdc00d8cad3cecd84a1703de5f4a0cd340d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/comssone",
+      "sha256": "f4fd0059137edaa5b0935face792af03b15b361a0f9537df190a1c1c05759b87"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/drweb",
+      "sha256": "deb00e8a67200fa0eaf7db15db21f6928686e463e598b18cf579ae895ba95d91"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/dzen",
+      "sha256": "36b30c11be6730c7644d34027f7087bfc228d44ac6c15688c209bf7cfae98342"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/envybox",
+      "sha256": "4fd43709bb3133f0503dd92bb80786d7cdc637f335bc18100182d0045b9251ba"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/flowwow",
+      "sha256": "891c74dbb4f037be561f2f064da49b9180e7254e81349764248a6558c5fd4623"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/fonbet",
+      "sha256": "79c039c626fd496625dc1392abb568d602180aa690e1b0b435810fe457faaf30"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/funpay",
+      "sha256": "b8b5faffcc6efcf7b9c3973156121a0e2b55d249e8ad13298d738b20d98278d3"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/genotek-ru",
+      "sha256": "4cf1823f07d431f86eb71e8f607c2bf7d03d0ecf76de42c9b22bb555aa150e15"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/gismeteo",
+      "sha256": "abef26af13ecf75328a375b0a23937dffe94ac8ff33989f051bd3353be21ceff"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/group-ib",
+      "sha256": "bdc4cf70121dcf42d8b5d6099126aa1990470965b13992b432e124c92a61b817"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/headhunter",
+      "sha256": "344c9215710f7cc56f3ad8da351390dfadaac3a922d29def9e193ead8a8bc3e2"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/ideco-ru",
+      "sha256": "33ced4ca5e248952616555ee5befe43b0e415e2304d324b8da47a0bd2bf82772"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/ixbt",
+      "sha256": "02b9033062c1898138a7969967e2d88a069bed0ad980027796f918de8b6d57ba"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/kaspersky",
+      "sha256": "90f26c8af973e898516b10e5ffca9c23aacd907821e323712c854645d5a321a3"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/kinopoisk",
+      "sha256": "6601a8aaf01c8635ded299ba3705f54075ecce3ccac691b4610c0f43c61bcac6"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/kontur",
+      "sha256": "406892106fe72ed9f15846de70d0c270865796893ff90f7af3b2bcac0b46d1ee"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/ligastavok",
+      "sha256": "8e5e7e42d5ee163a7263b02c8803126d6a98cef676fbdad9f409fc4c7c370c18"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/magnit",
+      "sha256": "3440dc0057c4a671b3cc3f1b1f6ce900683071d2ca195cb8692a686483b74cc3"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/mailru-group",
+      "sha256": "a81db63d8c0dec1e155a86b049abaf07ebc4a8499ce6511114562e316b85e222"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/megafon",
+      "sha256": "8df53f5cfff52c7d0dbac0900ad487440b782674693163fc8bcc2ffd5818422d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/mindbox",
+      "sha256": "4ad72f27c88d8ed6baf7fad55a1c473341f6e29963a32a10d71b89f0afe9fe75"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/mosmetro",
+      "sha256": "b1858993d95b43df7f7f3f51294d4ca6a05b40c215bf16f43a5f79f5dbc0a0e6"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/mts-ru",
+      "sha256": "cb872cc62435343cf03b723d93b36d90f2a0cf0a7eefee7b1a954d11fbf8dea7"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/mvideo",
+      "sha256": "3ccf778d4dc0fe6685512fc32a037e16db0e602ff8f9a48e2234e1937bf099e2"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/myoffice-ru",
+      "sha256": "79cae97cceca1e43d8401ade80f8b60227299de4a493bf9e7d02a2759807f761"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/netcraze",
+      "sha256": "ba1fc94a06e5815db5f02ceea324d54d4fa2fb5b8d81b25e6c60cf94b3dc5091"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/nic-ru",
+      "sha256": "f8c3c503e94b97c38517775c6b214cb0b61483df56a09763687c6b2bfa09abc6"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/ok",
+      "sha256": "b0985772bca6c2d2e42544a1fe7cb50d455f4d28fb0faae286179a96214d65f1"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/okko",
+      "sha256": "6c8a4e9fc08d13d59de3146c39400810d1da4d7c493a68ef8543b7d8301dd9da"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/oskelly",
+      "sha256": "a144d3016dda5a012a391aa6117bbc70f0524a1686fc620a759fb587195efff1"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/overclockers-ru",
+      "sha256": "50b35d2b3db2c86dc763fab867a45c35dbb7e95368b13a8f1ef7b18011a96e4c"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/ozon",
+      "sha256": "cc625d0f6942006cd2395811f0aaa1a2c8a60f5b05ec2a2f4d2ad724a1f59cc4"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/positive-technologies",
+      "sha256": "f1b47451b8dd82c16bb8a840a6cb678088ddb3f1a38993d1e9844f789abc7c74"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/regru",
+      "sha256": "69bd37c77b07ad84d197a72212e62fae245ee5c01a47033cbc7bc6d217e326f3"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/rossiyasegodnya",
+      "sha256": "1e8cfb8639cd0cd115b16a6db1a5b90136394d7e255db0d29d24e938ddedefbb"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/rostelecom",
+      "sha256": "96ebaf25fb6dc6dc544335a7787fefc775b1cefd26839ac44f1399b6f3f03f2b"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/rt",
+      "sha256": "408c983e34d964dbde4f73287b1eca886318dbe4f8e07cc6794a286c565c1d0a"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/rutube",
+      "sha256": "fd5eb6de6046d723af8bf5d7ab32b65d6bb18b7d2f2277ffb16923ca30b0b6ff"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/sberbank",
+      "sha256": "bc7ef49a9f26aff5ad7a0a33a819636847a402b220da0b7eac54dc94efee37e9"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/selectel",
+      "sha256": "b26d0bc6e5161401721898e48ad25df008d7cff2cbc69694e39f53d71d63d704"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/servicepipe",
+      "sha256": "f827e4f5906e912296632923f246e79e23c9c12dd63cad82e7be84eb5f8d9624"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/skyeng",
+      "sha256": "a1ecc372035ef9a8c492287dc4911848b47bc52cc24491bcfb607531d057159e"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/smena",
+      "sha256": "6999300d806f710f601067f3fbd64208fc2ed6727aac662de0556c475be4f827"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/sokolov",
+      "sha256": "6db59bae499f7b9e51d85eac465a29ba1e34fa9973473d001ed6fc0c9684f56d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/t2-ru",
+      "sha256": "44d0c2a56cb78427af69311f3f6d43e5f4831b3ba22d0776b4de621410ead443"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/tbank-ru",
+      "sha256": "91006fc5318edb6e46a1f1cce8e7002c8a69308d80381005beb2504d350a7ac5"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/tilda",
+      "sha256": "4e23d227fa6cbd6f60141df87f16ec9cff9a790b066cad778181badacd2a876a"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/timeweb",
+      "sha256": "44e7c9a2b969d0c895eefdddfe7457290e703ddf1d5cc58c32198546f034dc9e"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/tld-ru",
+      "sha256": "bf7732ef330b0b7f1760c7ac1e01aafe8b4ce5942eb899bf16e2a222466c5182"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/ucoz",
+      "sha256": "2bcfd63ea27c4586c47d92f806a504aaecef0fc3b30eff2fb56061926f0e4b78"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/vk",
+      "sha256": "754ed6707edb6288ada21308197770c7b9b28ab94ae412afcf594d9b0534c708"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/whoosh",
+      "sha256": "38b1e9f5e02ca03b06a72dae9fbabd81370e25ace878812cde126b1c7634a484"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/wildberries",
+      "sha256": "d0f9a0303b9e3b87af88c8d5630c7f5cbc2ca271d8cc23f1c9f31b6c12108393"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/wink",
+      "sha256": "5ae7300dcfe2bfa9d02f2f98319c133f016e3c949572a2ceb5ef22e9faf04f44"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/winline",
+      "sha256": "7b922d65b880322f8483da66ddbc0903e643653435a3a266c9930a201dbc0aba"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/x5",
+      "sha256": "32fab4f8a276c1d2dff06637188eccb3c3486cf06d51712d39bba474ae7f09f0"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/data/yandex",
+      "sha256": "d575ece45cf60abe0f1d4921ad26a7b4afe99fd8db0f4c7224027361b9be34cc"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Loyalsoldier/geoip/49cb9d1346e6ddd709effe93fd2075aba34de0fe/text/ru.txt",
+      "sha256": "00faa6686b931d1a02413dd89933f1492f6d0360ea8e21456a8dc56fdf4746d8"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/c6adacf29cc4fb05e04651fcf03e00989ef9f797/LICENSE",
+      "sha256": "b9d84a22870d3f21c91a4c6e410c9cc51d00902f5233ad0c84011479244bf7d2"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Loyalsoldier/geoip/424733bd132427dbd505ccc3b8e3ebc427494063/LICENSE",
+      "sha256": "5e436ff8ffbb77d8607220e9bce20c8915d860010feeb6c1ebef5a85688e9b39"
+    }
+  ],
+  "counts": {
+    "domain_suffix": 1781,
+    "domain": 229,
+    "domain_regex": 0,
+    "ip_cidr": 25171
+  },
+  "bytes": 528771,
+  "sha256": "7717c56af41284909094888ceb0d69fa9d447c33d21e712b5241faa45b9b243b",
+  "at": 1791560253.0060055
+}

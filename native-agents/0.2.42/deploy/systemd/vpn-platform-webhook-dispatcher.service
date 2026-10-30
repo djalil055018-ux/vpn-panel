@@ -1,0 +1,14 @@
+[Unit]
+Description=Deliver signed VPN billing webhooks
+After=network-online.target
+[Service]
+Type=oneshot
+User=vpnplatform
+Group=vpnplatform
+EnvironmentFile=/etc/vpn-platform/control-plane.env
+ExecStart=/opt/vpn-platform/bin/webhook-dispatcher
+TimeoutStartSec=55
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict

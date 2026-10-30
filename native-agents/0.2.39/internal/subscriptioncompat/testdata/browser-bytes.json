@@ -1,0 +1,942 @@
+[
+  {
+    "bytes": 0,
+    "expected": "0"
+  },
+  {
+    "bytes": 1,
+    "expected": "1.00 B"
+  },
+  {
+    "bytes": 999,
+    "expected": "999.00 B"
+  },
+  {
+    "bytes": 1000,
+    "expected": "0.98 KiB"
+  },
+  {
+    "bytes": 1001,
+    "expected": "0.98 KiB"
+  },
+  {
+    "bytes": 1023,
+    "expected": "1.00 KiB"
+  },
+  {
+    "bytes": 1024,
+    "expected": "1.00 KiB"
+  },
+  {
+    "bytes": 1025,
+    "expected": "1.00 KiB"
+  },
+  {
+    "bytes": 1152,
+    "expected": "1.13 KiB"
+  },
+  {
+    "bytes": 1536,
+    "expected": "1.50 KiB"
+  },
+  {
+    "bytes": 999999,
+    "expected": "976.56 KiB"
+  },
+  {
+    "bytes": 1000000,
+    "expected": "0.95 MiB"
+  },
+  {
+    "bytes": 1000001,
+    "expected": "0.95 MiB"
+  },
+  {
+    "bytes": 1048575,
+    "expected": "1.00 MiB"
+  },
+  {
+    "bytes": 1048576,
+    "expected": "1.00 MiB"
+  },
+  {
+    "bytes": 1048577,
+    "expected": "1.00 MiB"
+  },
+  {
+    "bytes": 1163723,
+    "expected": "1.11 MiB"
+  },
+  {
+    "bytes": 38576662,
+    "expected": "36.79 MiB"
+  },
+  {
+    "bytes": 38577565,
+    "expected": "36.79 MiB"
+  },
+  {
+    "bytes": 64971884,
+    "expected": "61.96 MiB"
+  },
+  {
+    "bytes": 223509572,
+    "expected": "213.16 MiB"
+  },
+  {
+    "bytes": 225526394,
+    "expected": "215.08 MiB"
+  },
+  {
+    "bytes": 279243352,
+    "expected": "266.31 MiB"
+  },
+  {
+    "bytes": 314554597,
+    "expected": "299.98 MiB"
+  },
+  {
+    "bytes": 389547523,
+    "expected": "371.50 MiB"
+  },
+  {
+    "bytes": 456036098,
+    "expected": "434.91 MiB"
+  },
+  {
+    "bytes": 516309337,
+    "expected": "492.39 MiB"
+  },
+  {
+    "bytes": 551123351,
+    "expected": "525.59 MiB"
+  },
+  {
+    "bytes": 569967225,
+    "expected": "543.56 MiB"
+  },
+  {
+    "bytes": 572868851,
+    "expected": "546.33 MiB"
+  },
+  {
+    "bytes": 623185891,
+    "expected": "594.32 MiB"
+  },
+  {
+    "bytes": 742046436,
+    "expected": "707.67 MiB"
+  },
+  {
+    "bytes": 798149743,
+    "expected": "761.17 MiB"
+  },
+  {
+    "bytes": 818286670,
+    "expected": "780.38 MiB"
+  },
+  {
+    "bytes": 850577147,
+    "expected": "811.17 MiB"
+  },
+  {
+    "bytes": 920370032,
+    "expected": "877.73 MiB"
+  },
+  {
+    "bytes": 949672789,
+    "expected": "905.68 MiB"
+  },
+  {
+    "bytes": 989656240,
+    "expected": "943.81 MiB"
+  },
+  {
+    "bytes": 993233232,
+    "expected": "947.22 MiB"
+  },
+  {
+    "bytes": 999999999,
+    "expected": "953.67 MiB"
+  },
+  {
+    "bytes": 1000000000,
+    "expected": "0.93 GiB"
+  },
+  {
+    "bytes": 1000000001,
+    "expected": "0.93 GiB"
+  },
+  {
+    "bytes": 1029680302,
+    "expected": "0.96 GiB"
+  },
+  {
+    "bytes": 1062606043,
+    "expected": "0.99 GiB"
+  },
+  {
+    "bytes": 1073741823,
+    "expected": "1.00 GiB"
+  },
+  {
+    "bytes": 1073741824,
+    "expected": "1.00 GiB"
+  },
+  {
+    "bytes": 1073741825,
+    "expected": "1.00 GiB"
+  },
+  {
+    "bytes": 1119202330,
+    "expected": "1.04 GiB"
+  },
+  {
+    "bytes": 1133158853,
+    "expected": "1.06 GiB"
+  },
+  {
+    "bytes": 1157896869,
+    "expected": "1.08 GiB"
+  },
+  {
+    "bytes": 1218163169,
+    "expected": "1.13 GiB"
+  },
+  {
+    "bytes": 1233097896,
+    "expected": "1.15 GiB"
+  },
+  {
+    "bytes": 1237186844,
+    "expected": "1.15 GiB"
+  },
+  {
+    "bytes": 1240767094,
+    "expected": "1.16 GiB"
+  },
+  {
+    "bytes": 1245541051,
+    "expected": "1.16 GiB"
+  },
+  {
+    "bytes": 1368158183,
+    "expected": "1.27 GiB"
+  },
+  {
+    "bytes": 1391948678,
+    "expected": "1.30 GiB"
+  },
+  {
+    "bytes": 1394423085,
+    "expected": "1.30 GiB"
+  },
+  {
+    "bytes": 1412407756,
+    "expected": "1.32 GiB"
+  },
+  {
+    "bytes": 1444285493,
+    "expected": "1.35 GiB"
+  },
+  {
+    "bytes": 1475571481,
+    "expected": "1.37 GiB"
+  },
+  {
+    "bytes": 1476120722,
+    "expected": "1.37 GiB"
+  },
+  {
+    "bytes": 1537795004,
+    "expected": "1.43 GiB"
+  },
+  {
+    "bytes": 1600748723,
+    "expected": "1.49 GiB"
+  },
+  {
+    "bytes": 1682108327,
+    "expected": "1.57 GiB"
+  },
+  {
+    "bytes": 1696368920,
+    "expected": "1.58 GiB"
+  },
+  {
+    "bytes": 1721805018,
+    "expected": "1.60 GiB"
+  },
+  {
+    "bytes": 1737799369,
+    "expected": "1.62 GiB"
+  },
+  {
+    "bytes": 1761749431,
+    "expected": "1.64 GiB"
+  },
+  {
+    "bytes": 1813736427,
+    "expected": "1.69 GiB"
+  },
+  {
+    "bytes": 1839942154,
+    "expected": "1.71 GiB"
+  },
+  {
+    "bytes": 1892692966,
+    "expected": "1.76 GiB"
+  },
+  {
+    "bytes": 1897382982,
+    "expected": "1.77 GiB"
+  },
+  {
+    "bytes": 1992094050,
+    "expected": "1.86 GiB"
+  },
+  {
+    "bytes": 1993950255,
+    "expected": "1.86 GiB"
+  },
+  {
+    "bytes": 2035159070,
+    "expected": "1.90 GiB"
+  },
+  {
+    "bytes": 2095679026,
+    "expected": "1.95 GiB"
+  },
+  {
+    "bytes": 2134451138,
+    "expected": "1.99 GiB"
+  },
+  {
+    "bytes": 2164849578,
+    "expected": "2.02 GiB"
+  },
+  {
+    "bytes": 2191767604,
+    "expected": "2.04 GiB"
+  },
+  {
+    "bytes": 2252023330,
+    "expected": "2.10 GiB"
+  },
+  {
+    "bytes": 2297155421,
+    "expected": "2.14 GiB"
+  },
+  {
+    "bytes": 2308304785,
+    "expected": "2.15 GiB"
+  },
+  {
+    "bytes": 2312645059,
+    "expected": "2.15 GiB"
+  },
+  {
+    "bytes": 2319969010,
+    "expected": "2.16 GiB"
+  },
+  {
+    "bytes": 2340457892,
+    "expected": "2.18 GiB"
+  },
+  {
+    "bytes": 2351512308,
+    "expected": "2.19 GiB"
+  },
+  {
+    "bytes": 2473296991,
+    "expected": "2.30 GiB"
+  },
+  {
+    "bytes": 2509746192,
+    "expected": "2.34 GiB"
+  },
+  {
+    "bytes": 2529697372,
+    "expected": "2.36 GiB"
+  },
+  {
+    "bytes": 2544707083,
+    "expected": "2.37 GiB"
+  },
+  {
+    "bytes": 2545488904,
+    "expected": "2.37 GiB"
+  },
+  {
+    "bytes": 2574340500,
+    "expected": "2.40 GiB"
+  },
+  {
+    "bytes": 2645413613,
+    "expected": "2.46 GiB"
+  },
+  {
+    "bytes": 2721289472,
+    "expected": "2.53 GiB"
+  },
+  {
+    "bytes": 2744657863,
+    "expected": "2.56 GiB"
+  },
+  {
+    "bytes": 2759148526,
+    "expected": "2.57 GiB"
+  },
+  {
+    "bytes": 2898651607,
+    "expected": "2.70 GiB"
+  },
+  {
+    "bytes": 2978433246,
+    "expected": "2.77 GiB"
+  },
+  {
+    "bytes": 3005917280,
+    "expected": "2.80 GiB"
+  },
+  {
+    "bytes": 3014032714,
+    "expected": "2.81 GiB"
+  },
+  {
+    "bytes": 3017401192,
+    "expected": "2.81 GiB"
+  },
+  {
+    "bytes": 3071144573,
+    "expected": "2.86 GiB"
+  },
+  {
+    "bytes": 3131355113,
+    "expected": "2.92 GiB"
+  },
+  {
+    "bytes": 3278862092,
+    "expected": "3.05 GiB"
+  },
+  {
+    "bytes": 3304526264,
+    "expected": "3.08 GiB"
+  },
+  {
+    "bytes": 3322921023,
+    "expected": "3.09 GiB"
+  },
+  {
+    "bytes": 3380626558,
+    "expected": "3.15 GiB"
+  },
+  {
+    "bytes": 3502574769,
+    "expected": "3.26 GiB"
+  },
+  {
+    "bytes": 3679735209,
+    "expected": "3.43 GiB"
+  },
+  {
+    "bytes": 3761641487,
+    "expected": "3.50 GiB"
+  },
+  {
+    "bytes": 3922090707,
+    "expected": "3.65 GiB"
+  },
+  {
+    "bytes": 3925180495,
+    "expected": "3.66 GiB"
+  },
+  {
+    "bytes": 3993553953,
+    "expected": "3.72 GiB"
+  },
+  {
+    "bytes": 4054989429,
+    "expected": "3.78 GiB"
+  },
+  {
+    "bytes": 4056119041,
+    "expected": "3.78 GiB"
+  },
+  {
+    "bytes": 4078926262,
+    "expected": "3.80 GiB"
+  },
+  {
+    "bytes": 4079510129,
+    "expected": "3.80 GiB"
+  },
+  {
+    "bytes": 4102492217,
+    "expected": "3.82 GiB"
+  },
+  {
+    "bytes": 4155575327,
+    "expected": "3.87 GiB"
+  },
+  {
+    "bytes": 4200532928,
+    "expected": "3.91 GiB"
+  },
+  {
+    "bytes": 4247075341,
+    "expected": "3.96 GiB"
+  },
+  {
+    "bytes": 999999999999,
+    "expected": "931.32 GiB"
+  },
+  {
+    "bytes": 1000000000000,
+    "expected": "0.91 TiB"
+  },
+  {
+    "bytes": 1000000000001,
+    "expected": "0.91 TiB"
+  },
+  {
+    "bytes": 1099511627775,
+    "expected": "1.00 TiB"
+  },
+  {
+    "bytes": 1099511627776,
+    "expected": "1.00 TiB"
+  },
+  {
+    "bytes": 1099511627777,
+    "expected": "1.00 TiB"
+  },
+  {
+    "bytes": 1220252008448,
+    "expected": "1.11 TiB"
+  },
+  {
+    "bytes": 40450561933312,
+    "expected": "36.79 TiB"
+  },
+  {
+    "bytes": 40451508797440,
+    "expected": "36.79 TiB"
+  },
+  {
+    "bytes": 68127958237184,
+    "expected": "61.96 TiB"
+  },
+  {
+    "bytes": 234366772969472,
+    "expected": "213.16 TiB"
+  },
+  {
+    "bytes": 236481564114944,
+    "expected": "215.08 TiB"
+  },
+  {
+    "bytes": 292807877066752,
+    "expected": "266.31 TiB"
+  },
+  {
+    "bytes": 329834401103872,
+    "expected": "299.98 TiB"
+  },
+  {
+    "bytes": 408470183477248,
+    "expected": "371.50 TiB"
+  },
+  {
+    "bytes": 478188507496448,
+    "expected": "434.91 TiB"
+  },
+  {
+    "bytes": 541389579354112,
+    "expected": "492.39 TiB"
+  },
+  {
+    "bytes": 577894718898176,
+    "expected": "525.59 TiB"
+  },
+  {
+    "bytes": 597653952921600,
+    "expected": "543.56 TiB"
+  },
+  {
+    "bytes": 600696528306176,
+    "expected": "546.33 TiB"
+  },
+  {
+    "bytes": 653457768841216,
+    "expected": "594.32 TiB"
+  },
+  {
+    "bytes": 778092083675136,
+    "expected": "707.67 TiB"
+  },
+  {
+    "bytes": 836920664915968,
+    "expected": "761.17 TiB"
+  },
+  {
+    "bytes": 858035763281920,
+    "expected": "780.38 TiB"
+  },
+  {
+    "bytes": 891894782492672,
+    "expected": "811.17 TiB"
+  },
+  {
+    "bytes": 965077926674432,
+    "expected": "877.73 TiB"
+  },
+  {
+    "bytes": 995804094398464,
+    "expected": "905.68 TiB"
+  },
+  {
+    "bytes": 999999999999999,
+    "expected": "0.89 PiB"
+  },
+  {
+    "bytes": 1000000000000000,
+    "expected": "0.89 PiB"
+  },
+  {
+    "bytes": 1000000000000001,
+    "expected": "0.89 PiB"
+  },
+  {
+    "bytes": 1037729781514240,
+    "expected": "0.92 PiB"
+  },
+  {
+    "bytes": 1041480529477632,
+    "expected": "0.93 PiB"
+  },
+  {
+    "bytes": 1079698052349952,
+    "expected": "0.96 PiB"
+  },
+  {
+    "bytes": 1114223194144768,
+    "expected": "0.99 PiB"
+  },
+  {
+    "bytes": 1125899906842623,
+    "expected": "1.00 PiB"
+  },
+  {
+    "bytes": 1125899906842624,
+    "expected": "1.00 PiB"
+  },
+  {
+    "bytes": 1125899906842625,
+    "expected": "1.00 PiB"
+  },
+  {
+    "bytes": 1173568702382080,
+    "expected": "1.04 PiB"
+  },
+  {
+    "bytes": 1188203177443328,
+    "expected": "1.06 PiB"
+  },
+  {
+    "bytes": 1214142867308544,
+    "expected": "1.08 PiB"
+  },
+  {
+    "bytes": 1277336663097344,
+    "expected": "1.13 PiB"
+  },
+  {
+    "bytes": 1292996859396096,
+    "expected": "1.15 PiB"
+  },
+  {
+    "bytes": 1297284432134144,
+    "expected": "1.15 PiB"
+  },
+  {
+    "bytes": 1301038596358144,
+    "expected": "1.16 PiB"
+  },
+  {
+    "bytes": 1306044453093376,
+    "expected": "1.16 PiB"
+  },
+  {
+    "bytes": 1434617834897408,
+    "expected": "1.27 PiB"
+  },
+  {
+    "bytes": 1459563976982528,
+    "expected": "1.30 PiB"
+  },
+  {
+    "bytes": 1462158580776960,
+    "expected": "1.30 PiB"
+  },
+  {
+    "bytes": 1481016875155456,
+    "expected": "1.32 PiB"
+  },
+  {
+    "bytes": 1514443105107968,
+    "expected": "1.35 PiB"
+  },
+  {
+    "bytes": 1547248841261056,
+    "expected": "1.37 PiB"
+  },
+  {
+    "bytes": 1547824762191872,
+    "expected": "1.37 PiB"
+  },
+  {
+    "bytes": 1612494934114304,
+    "expected": "1.43 PiB"
+  },
+  {
+    "bytes": 1678506692968448,
+    "expected": "1.49 PiB"
+  },
+  {
+    "bytes": 1763818421092352,
+    "expected": "1.57 PiB"
+  },
+  {
+    "bytes": 1778771736657920,
+    "expected": "1.58 PiB"
+  },
+  {
+    "bytes": 1805443418554368,
+    "expected": "1.60 PiB"
+  },
+  {
+    "bytes": 1822214711148544,
+    "expected": "1.62 PiB"
+  },
+  {
+    "bytes": 1847328171360256,
+    "expected": "1.64 PiB"
+  },
+  {
+    "bytes": 1901840487677952,
+    "expected": "1.69 PiB"
+  },
+  {
+    "bytes": 1929319184072704,
+    "expected": "1.71 PiB"
+  },
+  {
+    "bytes": 1984632419516416,
+    "expected": "1.76 PiB"
+  },
+  {
+    "bytes": 1989550257733632,
+    "expected": "1.77 PiB"
+  },
+  {
+    "bytes": 2088862010572800,
+    "expected": "1.86 PiB"
+  },
+  {
+    "bytes": 2090808382586880,
+    "expected": "1.86 PiB"
+  },
+  {
+    "bytes": 2134018956984320,
+    "expected": "1.90 PiB"
+  },
+  {
+    "bytes": 2197478730366976,
+    "expected": "1.95 PiB"
+  },
+  {
+    "bytes": 2238134236479488,
+    "expected": "1.99 PiB"
+  },
+  {
+    "bytes": 2270009311100928,
+    "expected": "2.02 PiB"
+  },
+  {
+    "bytes": 2298234907131904,
+    "expected": "2.04 PiB"
+  },
+  {
+    "bytes": 2361417615278080,
+    "expected": "2.10 PiB"
+  },
+  {
+    "bytes": 2408742042730496,
+    "expected": "2.14 PiB"
+  },
+  {
+    "bytes": 2420432998236160,
+    "expected": "2.15 PiB"
+  },
+  {
+    "bytes": 2424984105385984,
+    "expected": "2.15 PiB"
+  },
+  {
+    "bytes": 2432663824629760,
+    "expected": "2.16 PiB"
+  },
+  {
+    "bytes": 2454147974561792,
+    "expected": "2.18 PiB"
+  },
+  {
+    "bytes": 2465739369873408,
+    "expected": "2.19 PiB"
+  },
+  {
+    "bytes": 2593439865634816,
+    "expected": "2.30 PiB"
+  },
+  {
+    "bytes": 2631659623022592,
+    "expected": "2.34 PiB"
+  },
+  {
+    "bytes": 2652579951542272,
+    "expected": "2.36 PiB"
+  },
+  {
+    "bytes": 2668318774263808,
+    "expected": "2.37 PiB"
+  },
+  {
+    "bytes": 2669138573000704,
+    "expected": "2.37 PiB"
+  },
+  {
+    "bytes": 2699391664128000,
+    "expected": "2.40 PiB"
+  },
+  {
+    "bytes": 2773917224665088,
+    "expected": "2.46 PiB"
+  },
+  {
+    "bytes": 2853478829391872,
+    "expected": "2.53 PiB"
+  },
+  {
+    "bytes": 2877982363353088,
+    "expected": "2.56 PiB"
+  },
+  {
+    "bytes": 2893176924798976,
+    "expected": "2.57 PiB"
+  },
+  {
+    "bytes": 3039456507461632,
+    "expected": "2.70 PiB"
+  },
+  {
+    "bytes": 3123113619357696,
+    "expected": "2.77 PiB"
+  },
+  {
+    "bytes": 3151932717793280,
+    "expected": "2.80 PiB"
+  },
+  {
+    "bytes": 3160442367115264,
+    "expected": "2.81 PiB"
+  },
+  {
+    "bytes": 3163974472302592,
+    "expected": "2.81 PiB"
+  },
+  {
+    "bytes": 3220328491778048,
+    "expected": "2.86 PiB"
+  },
+  {
+    "bytes": 3283463818969088,
+    "expected": "2.92 PiB"
+  },
+  {
+    "bytes": 3438136096980992,
+    "expected": "3.05 PiB"
+  },
+  {
+    "bytes": 3465046931800064,
+    "expected": "3.08 PiB"
+  },
+  {
+    "bytes": 3484335234613248,
+    "expected": "3.09 PiB"
+  },
+  {
+    "bytes": 3544843873681408,
+    "expected": "3.15 PiB"
+  },
+  {
+    "bytes": 3672715840978944,
+    "expected": "3.26 PiB"
+  },
+  {
+    "bytes": 3858482026512384,
+    "expected": "3.43 PiB"
+  },
+  {
+    "bytes": 3944366983872512,
+    "expected": "3.50 PiB"
+  },
+  {
+    "bytes": 4112610185183232,
+    "expected": "3.65 PiB"
+  },
+  {
+    "bytes": 4115850062725120,
+    "expected": "3.66 PiB"
+  },
+  {
+    "bytes": 4187544829820928,
+    "expected": "3.72 PiB"
+  },
+  {
+    "bytes": 4251964595503104,
+    "expected": "3.78 PiB"
+  },
+  {
+    "bytes": 4253149079535616,
+    "expected": "3.78 PiB"
+  },
+  {
+    "bytes": 4277064184102912,
+    "expected": "3.80 PiB"
+  },
+  {
+    "bytes": 4277676413026304,
+    "expected": "3.80 PiB"
+  },
+  {
+    "bytes": 4301774878932992,
+    "expected": "3.82 PiB"
+  },
+  {
+    "bytes": 4357436554084352,
+    "expected": "3.87 PiB"
+  },
+  {
+    "bytes": 4404578015510528,
+    "expected": "3.91 PiB"
+  },
+  {
+    "bytes": 4453381272764416,
+    "expected": "3.96 PiB"
+  },
+  {
+    "bytes": 9007199254740991,
+    "expected": "8.00 PiB"
+  }
+]

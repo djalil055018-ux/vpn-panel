@@ -1,0 +1,8 @@
+BEGIN;
+CREATE TABLE tenant_resource_limits (
+ tenant_id UUID PRIMARY KEY REFERENCES tenants(id) ON DELETE CASCADE,
+ max_clients INTEGER NOT NULL DEFAULT 0 CHECK(max_clients BETWEEN 0 AND 100000),
+ max_plans INTEGER NOT NULL DEFAULT 0 CHECK(max_plans BETWEEN 0 AND 10000),
+ updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+COMMIT;

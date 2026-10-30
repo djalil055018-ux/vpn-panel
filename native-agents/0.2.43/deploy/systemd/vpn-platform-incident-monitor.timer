@@ -1,0 +1,8 @@
+[Unit]
+Description=Check VPN platform incidents every minute
+[Timer]
+OnCalendar=*-*-* *:*:30 UTC
+AccuracySec=1
+Persistent=true
+[Install]
+WantedBy=timers.target

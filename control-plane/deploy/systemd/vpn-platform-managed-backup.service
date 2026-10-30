@@ -1,0 +1,15 @@
+[Unit]
+Description=VPN Platform verified local backup
+After=network-online.target
+OnFailure=vpn-platform-backup-failure.service
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/vpn-platform/platform-backup.py control-plane create --keep 7 --no-report
+TimeoutStartSec=1800
+Nice=10
+IOSchedulingClass=idle
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/backups/vpn-platform/managed /var/lib/vpn-platform/operations /run/lock

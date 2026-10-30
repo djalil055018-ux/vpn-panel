@@ -1,0 +1,47 @@
+.workspace { display:grid; gap:22px; min-width:0; }
+.hero { border:1px solid color-mix(in srgb,var(--accent) 25%,var(--border)); border-radius:22px; padding:28px; background:linear-gradient(125deg,color-mix(in srgb,var(--accent) 8%,var(--surface)),var(--surface)); }
+.heroHeading,.toolbar,.editorHeading,.cardHeading,.cardFooter,.formFooter { display:flex; justify-content:space-between; align-items:center; gap:20px; }
+.heroHeading h2 { font-size:25px; letter-spacing:-.035em; margin:7px 0 9px; }
+.heroHeading p:not(.kicker),.toolbar p { font-size:13px; margin:0; line-height:1.6; }
+.kicker { color:var(--accent); font-size:10px; font-weight:750; letter-spacing:.12em; margin:0 0 8px; }
+.protocol { flex:none; border:1px solid var(--border); border-radius:25px; padding:8px 12px; font-size:10px; letter-spacing:.04em; color:var(--muted); background:var(--surface); }
+.route { display:grid; grid-template-columns:70px 24px minmax(0,1fr) 24px minmax(0,1fr) 24px 70px; gap:12px; align-items:center; margin-top:28px; }
+.endpoint { display:grid; justify-items:center; gap:9px; color:var(--muted); font-size:11px; }
+.arrow { color:var(--muted); text-align:center; font-size:22px; }
+.hop { display:flex; align-items:center; gap:12px; min-width:0; padding:17px 14px; border:1px solid color-mix(in srgb,var(--accent) 28%,var(--border)); border-radius:15px; background:var(--surface); }
+.hop>div { min-width:0; }
+.hopNumber { display:grid; place-items:center; width:33px; height:33px; flex:none; border-radius:10px; color:var(--accent); background:color-mix(in srgb,var(--accent) 10%,transparent); font:600 11px ui-monospace,monospace; }
+.hop small { display:block; font-size:9px; letter-spacing:.06em; color:var(--muted); margin-bottom:6px; }
+.hop strong { display:block; font-size:14px; font-weight:600; overflow-wrap:anywhere; }
+.exitHop { border-color:color-mix(in srgb,var(--success) 28%,var(--border)); }
+.exitHop .hopNumber { color:var(--success); background:color-mix(in srgb,var(--success) 10%,transparent); }
+.metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.metrics>div { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:19px 22px; border:1px solid var(--border); border-radius:15px; background:var(--surface); }
+.metrics span { color:var(--muted); font-size:12px; }
+.metrics strong { font-size:25px; font-weight:600; font-variant-numeric:tabular-nums; }
+.toolbar h2 { font-size:20px; margin-bottom:5px; }
+.buttons { display:flex; gap:10px; align-items:center; flex-wrap:wrap; flex:none; }
+.list { display:grid; gap:16px; }
+.card,.editor { min-width:0; padding:24px; background:var(--surface); border:1px solid var(--border); border-radius:19px; }
+.cardHeading h3 { font-size:21px; font-weight:600; letter-spacing:-.025em; margin:0; overflow-wrap:anywhere; }
+.badge { font-size:11px; font-weight:600; padding:7px 10px; border-radius:20px; white-space:nowrap; background:var(--surface-2); }
+.good { color:var(--success); }.warn { color:var(--warning); }.bad { color:var(--danger); }.neutral { color:var(--muted); }
+.badge.good { background:color-mix(in srgb,var(--success) 10%,var(--surface)); }.badge.warn { background:color-mix(in srgb,var(--warning) 10%,var(--surface)); }.badge.bad { background:color-mix(in srgb,var(--danger) 10%,var(--surface)); }
+.smallRoute { margin-top:21px; gap:9px; }.smallRoute .hop { background:var(--surface-2); border-color:var(--border); }
+.facts { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; padding:23px 0; margin-top:5px; }
+.facts>div { min-width:0; }.facts span { display:block; font-size:11px; color:var(--muted); margin-bottom:7px; }.facts strong { display:block; font-size:13px; font-weight:500; overflow-wrap:anywhere; font-variant-numeric:tabular-nums; }
+.cardFooter { border-top:1px solid var(--border-soft); padding-top:16px; }.cardFooter p { font-size:12px; line-height:1.6; max-width:550px; margin:0; }
+.deleteButton { background:transparent; color:var(--muted); border:0; font:inherit; font-size:12px; padding:10px; }.deleteButton:hover { color:var(--danger); }.deleteButton:disabled { opacity:.45; cursor:default; }
+.empty { display:grid; justify-items:center; text-align:center; padding:40px 20px; border:1px dashed var(--border); border-radius:19px; background:var(--surface); }
+.emptyIcon { width:62px; height:62px; display:grid; place-items:center; border-radius:19px; background:color-mix(in srgb,var(--accent) 9%,transparent); color:var(--accent); margin-bottom:19px; }
+.empty h3 { font-size:19px; letter-spacing:-.02em; }.empty p { font-size:13px; max-width:450px; line-height:1.7; margin:10px 0 20px; }
+.note { padding:15px 18px; border:1px solid var(--border); background:var(--surface-2); border-radius:12px; font-size:12px; line-height:1.7; margin:0; }.note a { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+.editorAnchor { scroll-margin-top:25px; }.editor { border-color:color-mix(in srgb,var(--accent) 45%,var(--border)); }.editorHeading { margin-bottom:25px; }.editorHeading h2 { font-size:22px; }.editor>p { line-height:1.7; font-size:13px; }
+.form fieldset { border:0; padding:0; margin:0; min-width:0; display:grid; gap:20px; }.fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }.wide { grid-column:1/-1; }
+.fields label { display:grid; gap:8px; font-size:12px; font-weight:600; min-width:0; }.fields label>span { font-size:11px; font-weight:400; line-height:1.6; color:var(--muted); }.fields input,.fields select { width:100%; min-width:0; border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); background:var(--surface-2); font:inherit; font-weight:400; font-size:13px; }
+.fields input:focus-visible,.fields select:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.preview { padding:20px; border:1px solid var(--border); border-radius:15px; }.preview>strong { font-size:17px; font-weight:600; overflow-wrap:anywhere; }
+.check { display:flex; gap:11px; align-items:flex-start; font-size:12px; line-height:1.6; font-weight:400; margin:0; }.check input { width:17px; height:17px; flex:none; margin:2px 0 0; accent-color:var(--accent); }.check strong { font-size:13px; font-weight:600; }.check small { display:block; color:var(--muted); font-size:12px; margin-top:3px; }.consent { padding:15px; background:var(--surface-2); border-radius:12px; }
+.formFooter { padding-top:5px; }.formFooter p { font-size:12px; line-height:1.6; margin:0; }.formFooter button { flex:none; }.form>p,.feedback { font-size:13px; line-height:1.7; margin:0; }.form>p { margin-top:15px; }.editor form>.buttons { margin:18px 0; }
+@media(max-width:1150px) { .route { grid-template-columns:45px 15px minmax(0,1fr) 15px minmax(0,1fr) 15px 45px; gap:7px; }.hop { padding:13px 10px; gap:9px; }.hopNumber { display:none; }.heroHeading { flex-wrap:wrap; }.hero { padding:23px; } }
+@media(max-width:750px) { .metrics { gap:8px; }.metrics>div { flex-direction:column; align-items:flex-start; padding:14px; }.metrics span { font-size:11px; line-height:1.5; }.metrics strong { font-size:23px; }.toolbar,.cardFooter,.formFooter { align-items:flex-start; flex-direction:column; gap:14px; }.card,.editor { padding:18px; }.cardHeading { align-items:flex-start; flex-wrap:wrap; gap:10px; }.cardHeading h3 { font-size:18px; }.facts { grid-template-columns:repeat(2,minmax(0,1fr)); }.fields { grid-template-columns:minmax(0,1fr); gap:17px; }.heroHeading h2 { font-size:23px; }.route { grid-template-columns:1fr; gap:6px; }.route .arrow { transform:rotate(90deg); line-height:22px; }.endpoint { display:flex; justify-content:center; gap:9px; }.hop { padding:15px; }.hopNumber { display:grid; }.preview { padding:16px; }.hero { padding:22px 18px; }.smallRoute .endpoint,.smallRoute>.arrow:first-of-type,.smallRoute>.arrow:last-of-type { display:none; }.smallRoute { grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr); }.smallRoute .arrow { transform:none; }.smallRoute .hop { padding:11px; }.smallRoute .hopNumber { display:none; }.smallRoute .hop strong { font-size:12px; }.smallRoute .hop small { font-size:8px; }.editorHeading h2 { font-size:20px; }.formFooter button { width:100%; } }

@@ -1,0 +1,33 @@
+import Link from "next/link";
+import { getOperationsStatus, type BackupStatus, type OperationsStatus } from "@/lib/control-plane";
+
+export const dynamic = "force-dynamic";
+function when(value: string | null) { return value ? new Intl.DateTimeFormat("ru-RU", { dateStyle: "medium", timeStyle: "short", timeZone: "Europe/Moscow" }).format(new Date(value)) : "Ещё нет"; }
+function bytes(value: number) { return value < 0 ? "Нет данных" : `${(value / 1024 ** 3).toFixed(1)} ГБ`; }
+function backupGood(backup: BackupStatus | null, at: string) { return !!backup && backup.status === "verified" && !!backup.last_success_at && Date.parse(at) - Date.parse(backup.last_success_at) < 36 * 3600 * 1000; }
+function Backup({ backup, at }: { backup: BackupStatus | null; at: string }) {
+  return <div className="operations-backup"><strong className={backupGood(backup, at) ? "operations-good" : "operations-warning"}>{backupGood(backup, at) ? "Свежая проверенная копия" : backup?.status === "failed" ? "Ошибка резервного копирования" : "Нужна свежая копия"}</strong><span>{when(backup?.last_success_at ?? null)}</span>{backup && <span>{backup.verification === "database_restore" ? "Восстановление в отдельную БД проверено" : "Целостность архива проверена на ноде"} · {(backup.size_bytes / 1024 ** 2).toFixed(0)} МБ</span>}</div>;
+}
+export default async function OperationsPage() {
+  let data: OperationsStatus | null = null;
+  try { data = await getOperationsStatus(); }
+  catch { /* Render the unavailable state below. */ }
+  if (!data) return <section className="panel"><div className="panel-header"><div><h1>Состояние платформы</h1><p>Не удалось получить состояние. Обновите страницу немного позже.</p></div></div></section>;
+  const healthy = data.nodes.filter(n => n.lifecycle.online && n.lifecycle.healthy && n.lifecycle.health_fresh && n.lifecycle.desired_generation === n.lifecycle.applied_generation).length;
+  const backups = data.nodes.filter(n => backupGood(n.backup, data.generated_at)).length;
+  return <>
+    <header className="page-header"><div><h1>Состояние платформы</h1><p>Работа нод, сертификаты и проверенные резервные копии.</p></div><div className="plan-actions"><Link href="/incidents" className="button ghost">Журнал инцидентов</Link><Link href="/operations" className="button ghost">Обновить</Link></div></header>
+    {data.pending_access_nodes > 0 && <div className="alert error">На нодах ожидает снятия неактивный клиентский доступ: {data.pending_access_nodes}. Проверка выполняется каждую минуту; если предупреждение сохраняется, проверьте ноды и службу контроля доступа.</div>}
+    <div className="operations-summary">
+      <section className="panel"><span>Здоровые ноды</span><strong>{healthy} / {data.nodes.length}</strong></section>
+      <section className="panel"><span>Свежие копии нод</span><strong>{backups} / {data.nodes.length}</strong></section>
+      <section className="panel"><span>Сертификаты: требуют внимания</span><strong>{data.attention_certificates}</strong></section>
+      <section className="panel"><span>Свободно на сервере панели</span><strong className={data.control_plane_free_bytes >= 0 && data.control_plane_free_bytes < 1024 ** 3 ? "operations-warning" : ""}>{bytes(data.control_plane_free_bytes)}</strong></section>
+    </div>
+    <section className="panel"><div className="panel-header"><div><h2>Резервная копия панели</h2><p>База данных, настройки, исходный код и исполняемые файлы.</p></div></div><div className="operations-content"><Backup backup={data.control_plane_backup} at={data.generated_at} /></div><p className="certificate-note">Копии сохраняются ежедневно локально, последние 7 проверенных копий удерживаются. Проверка базы выполняется в изоляции. Внешнее хранилище и аварийное восстановление сервера пока не настроены.</p></section>
+    <section className="panel"><div className="panel-header"><div><h2>Проверка восстановления</h2><p>Запуск копии Control Plane и заново собранного интерфейса в изоляции.</p></div></div><div className="operations-content">{data.restore_drill?.status === "verified" ? <><strong className="operations-good">Копия платформы успешно запущена</strong><p>{when(data.restore_drill.verified_at)} · Control Plane {data.restore_drill.control_plane_version}</p><p>Проверено страниц: {data.restore_drill.web_pages} · Время проверки: {Math.ceil(data.restore_drill.duration_seconds / 60)} мин.</p><p className="plan-muted">Копия: {data.restore_drill.backup_id}</p></> : data.restore_drill?.status === "failed" ? <><strong className="operations-warning">Последняя проверка восстановления не завершилась</strong><p>{when(data.restore_drill.checked_at)}</p></> : <p className="plan-muted">Проверка запуска восстановленной копии ещё не выполнялась.</p>}</div><p className="certificate-note">Отдельная временная база и локальные порты; рабочие ноды не подключаются. Проверяется сохранённая версия копии. Восстановление на новом сервере и внешнее хранилище требуют отдельной проверки.</p></section>
+    <section className="panel"><div className="panel-header"><div><h2>Ноды</h2><p>Архивы нод содержат регистрацию, настройки и ключи; в панели отображается только результат проверки.</p></div></div><div className="operations-nodes">{data.nodes.map(node => <article key={node.id} className="operations-node"><div><Link href={`/nodes/${node.id}/control`}><strong>{node.name}</strong></Link><p className={node.lifecycle.online && node.lifecycle.healthy && node.lifecycle.health_fresh ? "operations-good" : "operations-warning"}>{node.lifecycle.online ? node.lifecycle.healthy && node.lifecycle.health_fresh ? "В работе" : "Требует проверки" : "Нет связи"}</p><span>Поколения: {node.lifecycle.desired_generation} / {node.lifecycle.applied_generation} · Агент {node.lifecycle.agent_version ?? "—"}</span></div>{node.traffic_delivery && <div className="operations-backup"><strong>Учёт трафика</strong><span>Измерение: {when(node.traffic_delivery.recorded_at)}</span><span>Подтверждено панелью: {when(node.traffic_delivery.received_at)}</span></div>}<Backup backup={node.backup} at={data.generated_at} /></article>)}</div></section>
+    {(data.expired_certificates > 0 || data.expiring_certificates > 0 || data.failed_certificates > 0) && <section className="panel"><div className="panel-header"><div><h2>Сертификаты</h2><p>Истекли: {data.expired_certificates}. Истекают в течение 30 дней: {data.expiring_certificates}. Ошибки выпуска: {data.failed_certificates}.</p></div><Link href="/certificates" className="button primary">Проверить сертификаты</Link></div></section>}
+    <p className="plan-muted">Обновлено: {when(data.generated_at)} (Москва).</p>
+  </>;
+}

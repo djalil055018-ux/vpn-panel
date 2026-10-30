@@ -1,0 +1,14 @@
+[Unit]
+Description=Collect VPN platform incident conditions
+After=network-online.target
+[Service]
+Type=oneshot
+User=vpnplatform
+Group=vpnplatform
+EnvironmentFile=/etc/vpn-platform/control-plane.env
+ExecStart=/opt/vpn-platform/bin/incident-monitor
+TimeoutStartSec=55
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
