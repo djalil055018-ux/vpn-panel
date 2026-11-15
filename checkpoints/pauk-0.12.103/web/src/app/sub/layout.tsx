@@ -10,11 +10,12 @@ export const metadata: Metadata = {
 export default function SubscriptionLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <aside className="subscription-migration" aria-labelledby="subscription-migration-title">
-        <h2 id="subscription-migration-title">Обновите ссылку подписки PAUK</h2>
-        <p>Если в приложении сохранён старый адрес, скопируйте свою ссылку с sub.pauk.click на этой странице или откройте подписку в <a href="https://t.me/paauuk_bot">боте PAUK</a>.</p>
-        <p>Добавьте новую ссылку в VPN-приложение, обновите подписку и проверьте подключение. Затем удалите старую запись из приложения. Срок действия подписки сохраняется.</p>
-      </aside>
+      {process.env.PAUK_SUBSCRIPTION_MIGRATION_NOTICE?.trim() && (
+        <aside className="subscription-migration" aria-labelledby="subscription-migration-title">
+          <h2 id="subscription-migration-title">Обновление ссылки подписки</h2>
+          <p>{process.env.PAUK_SUBSCRIPTION_MIGRATION_NOTICE.trim()}</p>
+        </aside>
+      )}
       {children}
     </>
   );

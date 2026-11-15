@@ -1,8 +1,13 @@
 export const localRealityTarget = "127.0.0.1:18443";
 
 export function ownCoverDomain(value: string): boolean {
-  return value.length <= 253 && value !== "panel.pauk.click" && value !== "sub.pauk.click"
-    && /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+pauk\.click$/.test(value);
+  const reserved = [process.env.VPN_PLATFORM_PUBLIC_URL, process.env.VPN_PLATFORM_SUBSCRIPTION_URL]
+    .flatMap(origin => {
+      if (!origin) return [];
+      try { return [new URL(origin).hostname]; } catch { return []; }
+    });
+  return value.length <= 253 && !reserved.includes(value)
+    && /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z][a-z0-9-]{1,62}$/.test(value);
 }
 
 export function globallyRoutableIPv4(address: string): boolean {

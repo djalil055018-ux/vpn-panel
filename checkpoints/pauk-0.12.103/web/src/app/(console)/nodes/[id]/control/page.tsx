@@ -1,3 +1,4 @@
+import { installationOrigin } from "@/lib/installation-origin";
 import {NodeSecuritySection} from "@/components/node-security-section";
 import {NodeIngressSection} from "@/components/node-ingress-section";
 import { SubscriptionNames } from "@/components/subscription-names";
@@ -262,6 +263,7 @@ export default async function NodeControlPage({
         agentVersion={detail.node.agent_version}
         services={services.filter(s => s.security !== "tls" && !["shadowsocks","wireguard"].includes(s.protocol))}
         realities={realities}
+        coverOrigin={installationOrigin(process.env.VPN_PLATFORM_PUBLIC_URL)}
         coverCertificates={certificates.filter(certificate => ownCoverDomain(certificate.domain))}
       />}
 

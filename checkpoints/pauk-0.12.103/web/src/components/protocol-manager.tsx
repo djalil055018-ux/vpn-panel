@@ -417,6 +417,7 @@ export function ProtocolManager({
   services,
   realities,
   coverCertificates,
+  coverOrigin,
 }: {
   nodeID: string;
   agentVersion?: string;
@@ -428,6 +429,7 @@ export function ProtocolManager({
       VPNServiceRealityRecord |
       null
     >;
+  coverOrigin: string | null;
   coverCertificates: { id: string; domain: string }[];
 }) {
   const [mode, setMode] = useState("own");
@@ -435,8 +437,8 @@ export function ProtocolManager({
   const [port, setPort] = useState("443");
   const selected = coverCertificates.find(item => item.id === certificateID);
   const own = mode === "own";
-  const coverCommand = selected
-    ? `tmp=$(mktemp) && curl -fsSL 'https://panel.pauk.click/install/${coverInstallerName}' -o "$tmp" && printf '%s  %s\\n' '${coverInstallerSHA256}' "$tmp" | sha256sum -c - && python3 "$tmp" --node '${nodeID}' --certificate '${selected.id}' --domain '${selected.domain}'`
+  const coverCommand = selected && coverOrigin
+    ? `tmp=$(mktemp) && curl -fsSL '${coverOrigin}/install/${coverInstallerName}' -o "$tmp" && printf '%s  %s\\n' '${coverInstallerSHA256}' "$tmp" | sha256sum -c - && python3 "$tmp" --node '${nodeID}' --certificate '${selected.id}' --domain '${selected.domain}'`
     : "";
   const [
     createState,
@@ -541,7 +543,7 @@ export function ProtocolManager({
               <p>Если страницу ещё не настраивали, выполните команду один раз в root-консоли этой ноды.</p>
               <code className="ingress-install-command">{coverCommand}</code>
             </details>
-          </> : <p>Выпустите на этой ноде сертификат для её поддомена pauk.click, затем обновите страницу.</p>)}
+          </> : <p>Выпустите на этой ноде сертификат для её собственного домена, затем обновите страницу.</p>)}
 
           <div className="protocol-form-grid">
             <label>

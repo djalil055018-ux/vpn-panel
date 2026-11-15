@@ -16,4 +16,4 @@ cat controller-checkpoint-0.1.178.tgz.part-* > controller-checkpoint-0.1.178.tgz
 sha256sum controller-checkpoint-0.1.178.tgz
 ```
 
-Для новой установки и обновления публичной версии 0.1.155 используйте [ветку выпуска для продавцов](https://github.com/djalil055018-ux/vpn-panel/tree/release/remnawave-3.4.11).
+Для новой установки и обновления публичной версии 0.1.155 используйте [ветку выпуска для продавцов](https://github.com/djalil055018-ux/vpn-panel/tree/v0.12.103).

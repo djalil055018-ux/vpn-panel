@@ -20,6 +20,8 @@ DOMAIN=""
 ADMIN_USER="owner"
 CONTACT_EMAIL=""
 BEHIND_PROXY="no"
+TLS_FULLCHAIN=""
+TLS_KEY=""
 BOOTSTRAP_DIR=""
 HTTP_CONFIG=""
 TLS_CONFIG=""
@@ -28,6 +30,7 @@ fail() { printf 'PAUK_INSTALL_FAILED: %s\n' "$1" >&2; exit 1; }
 usage() {
   cat <<'EOF'
 Usage: install-pauk.sh --domain panel.example.com --email owner@example.com [--admin-user owner] [--behind-proxy]
+       Existing TLS certificate: --tls-fullchain /path/fullchain.pem --tls-key /path/privkey.pem
 
 Installer build 0.1.155; installs PAUK Control Plane 0.1.150 / Web 0.12.71 on a clean Ubuntu 24.04 amd64 host.
 Requires DNS to point to this server, inbound TCP ports 80 and 443, and a terminal.
@@ -40,6 +43,8 @@ while (($#)); do
     --email) (($# >= 2)) || fail "missing value for --email"; CONTACT_EMAIL="$2"; shift 2 ;;
     --admin-user) (($# >= 2)) || fail "missing value for --admin-user"; ADMIN_USER="$2"; shift 2 ;;
     --behind-proxy) BEHIND_PROXY="yes"; shift ;;
+    --tls-fullchain) (($# >= 2)) || fail "missing value for --tls-fullchain"; TLS_FULLCHAIN="$2"; shift 2 ;;
+    --tls-key) (($# >= 2)) || fail "missing value for --tls-key"; TLS_KEY="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) fail "unknown argument" ;;
   esac
@@ -57,6 +62,11 @@ fi
 [[ $DOMAIN =~ ^[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$ ]] || fail "domain must be a public DNS name without a path or wildcard"
 [[ $CONTACT_EMAIL =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]] || fail "provide a valid email for Let's Encrypt"
 [[ $ADMIN_USER =~ ^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$ ]] || fail "admin username must use letters, digits, dot, underscore, or hyphen"
+if [[ -n $TLS_FULLCHAIN || -n $TLS_KEY ]]; then
+  [[ -n $TLS_FULLCHAIN && -n $TLS_KEY && -f $TLS_FULLCHAIN && -f $TLS_KEY ]] || fail "provide both TLS certificate files"
+  openssl x509 -in "$TLS_FULLCHAIN" -checkhost "$DOMAIN" -checkend 2592000 -noout >/dev/null || fail "TLS certificate is invalid or expires within 30 days"
+  cmp -s <(openssl x509 -in "$TLS_FULLCHAIN" -pubkey -noout) <(openssl pkey -in "$TLS_KEY" -pubout) || fail "TLS key does not match the certificate"
+fi
 
 exec 9>/run/lock/pauk-self-hosted-bootstrap.lock
 flock -n 9 || fail "another PAUK installer is already running"
@@ -381,6 +391,19 @@ nginx -t
 systemctl reload nginx
 
 CERT_DIR="/etc/letsencrypt/live/$DOMAIN"
+if [[ -n $TLS_FULLCHAIN ]]; then
+  CERT_DIR="/etc/vpn-platform/tls"
+  install -d -o root -g root -m 0700 "$CERT_DIR"
+  for filename in fullchain.pem privkey.pem; do
+    source_file="$TLS_FULLCHAIN"
+    [[ $filename != privkey.pem ]] || source_file="$TLS_KEY"
+    if [[ -e $CERT_DIR/$filename ]]; then
+      cmp -s "$source_file" "$CERT_DIR/$filename" || fail "existing TLS file differs"
+    else
+      install -m 0600 "$source_file" "$CERT_DIR/$filename"
+    fi
+  done
+fi
 if [[ ! -s $CERT_DIR/fullchain.pem || ! -s $CERT_DIR/privkey.pem ]]; then
   certbot certonly --non-interactive --agree-tos --email "$CONTACT_EMAIL" \
     --webroot -w /var/www/letsencrypt -d "$DOMAIN"

@@ -1,2 +1,7 @@
-export const ingressInstallerSHA256="4db88b4f6dfcf99958392b8ac2e5e66a64b9349ccf0635701c7847ea183fc179";
-export function ingressCompanionInstallCommand(origin="https://pauk.panel.winphonestore.name") { return `curl -fsSL ${origin}/install/install-ingress-agent-v0.1.3.py -o /root/pauk-ingress-install.py && echo '${ingressInstallerSHA256}  /root/pauk-ingress-install.py' | sha256sum -c - && python3 /root/pauk-ingress-install.py && systemctl is-active pauk-ingress-agent.service`; }
+import { installationOrigin } from "./installation-origin";
+
+export function ingressCompanionInstallCommand(origin: string | null) {
+  const configured = installationOrigin(origin ?? undefined);
+  if (!configured) return "";
+  return `curl -fsSL ${configured}/install/install-ingress-agent-v0.1.4.py -o /root/pauk-ingress-install.py && echo 'b7aa7628e09f96cf3b8c1c0df0161144d623a0d0797559354f53627d5b06b719  /root/pauk-ingress-install.py' | sha256sum -c - && python3 /root/pauk-ingress-install.py --panel-origin ${configured} && systemctl is-active pauk-ingress-agent.service`;
+}

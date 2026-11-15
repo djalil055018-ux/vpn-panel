@@ -1,0 +1,57 @@
+{
+  "archive_sha256": "f0257b7e2a5c09d9f4bf6529bec091349ff41a737677e58f6110796a92755ac3",
+  "files": {
+    "artifacts/cores/amneziawg/3.1.20260828-pauk.1/linux-amd64.tar.gz": {
+      "bytes": 3050786,
+      "sha256": "1fc10912a24cc14178f3937552bd8c6a9d6489d8462f0884053a9ea3091e886a"
+    },
+    "artifacts/ingress-agent/0.1.3/linux-amd64/pauk-ingress-agent": {
+      "bytes": 7250080,
+      "sha256": "c75e33b056b412df99d08805fb084d67a0930bb2cd741b544f25754511ab0100"
+    },
+    "artifacts/node-agent/0.2.50/linux-amd64/vpn-node-agent": {
+      "bytes": 10551456,
+      "sha256": "2bc5fc3a0528b39a9e23edddc1f3484930f836455838a3111f865f94db9a7259"
+    },
+    "artifacts/node-agent/0.2.51/linux-amd64/vpn-node-agent": {
+      "bytes": 10551456,
+      "sha256": "9179331f96e1053a3e823111072af5e291d194f887fc21cb2b3cde0f84b819a3"
+    },
+    "artifacts/openvpn/2.6.19-0ubuntu0.24.04.4/linux-amd64/openvpn.deb": {
+      "bytes": 687736,
+      "sha256": "d288c3789e825b140258da3e2c40bdb8f07820b8e69ca6480b619b83af8f108a"
+    },
+    "artifacts/pptp/1.14.0-platform.1/linux-amd64/pptp-accel-1.14.0-platform.1-linux-amd64.tar.gz": {
+      "bytes": 2100301,
+      "sha256": "d6960405b74030750e7b835e3dafef76e26f1d2748a4d347578204fabcdd08a6"
+    },
+    "install/install-node-backup-v1.py": {
+      "bytes": 22754,
+      "sha256": "d5cf1c10de68df8704b26a8355f84995aa557457c7584c0d7a3ae1ea037aa334"
+    },
+    "install/install-vpn-agent-updater-v0.1.0.py": {
+      "bytes": 4875,
+      "sha256": "6298b66dc56255cfad6530307db50a9d320c74e0da511b39c119fffa6505d370"
+    },
+    "install/vpn-agent-updater-v0.1.0.py": {
+      "bytes": 11641,
+      "sha256": "485a34aca4630548f2930f24a0f7ae73cf910611749bcd649a0126597cdb7fde"
+    },
+    "install/vpn-node-tool-v0.2.50.py": {
+      "bytes": 63693,
+      "sha256": "451eaeb0dcf753b2b80d5ddd4deeee200bdd1beb3e9011e04bfc7bd0e34d344b"
+    },
+    "install/vpn-node-tool-v0.2.51-r1.py": {
+      "bytes": 64857,
+      "sha256": "883bcd06bfbbfbd33eb6f67e6f63a43d5d3e19308938f5c2c5db2601de009e74"
+    },
+    "install/vpn-node-tool-v0.2.51-r2.py": {
+      "bytes": 66936,
+      "sha256": "8d0f3c21a5a577cdf83a1dd4dec2a93a0cc8f3963e718d48b326f39336318d8b"
+    },
+    "install/vpn-node-tool-v0.2.51.py": {
+      "bytes": 64870,
+      "sha256": "6414d3204cd1d5cdfd641ae3a9808f7cf68d210e2f6908aededc7696ada637fa"
+    }
+  }
+}
