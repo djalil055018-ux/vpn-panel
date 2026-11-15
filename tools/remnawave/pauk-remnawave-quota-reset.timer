@@ -1,0 +1,10 @@
+[Unit]
+Description=Reset scheduled Remnawave traffic quotas
+
+[Timer]
+OnCalendar=*-*-* *:*:00 UTC
+AccuracySec=1s
+Persistent=yes
+
+[Install]
+WantedBy=timers.target

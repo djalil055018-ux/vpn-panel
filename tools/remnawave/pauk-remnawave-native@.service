@@ -1,0 +1,19 @@
+[Unit]
+Description=Activate a reviewed PAUK client migration
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/python3 /usr/local/libexec/pauk-remnawave-native.py
+StandardInput=socket
+StandardOutput=socket
+StandardError=journal
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX
+UMask=0077
+RuntimeMaxSec=20s

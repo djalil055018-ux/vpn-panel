@@ -1,7 +1,7 @@
 export type RemnawaveImport = {
   id: string;
   tenant_id: string;
-  state: "held";
+  state: "held" | "activating" | "active" | "rollback_required";
   created_at: string;
   report: {
     sha256: string;

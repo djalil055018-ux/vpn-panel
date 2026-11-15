@@ -1,0 +1,14 @@
+[Unit]
+Description=PAUK native client migration socket
+
+[Socket]
+ListenStream=/run/pauk-remnawave-native.sock
+SocketUser=root
+SocketGroup=vpnplatform-web
+SocketMode=0660
+Accept=yes
+RemoveOnStop=yes
+MaxConnections=2
+
+[Install]
+WantedBy=sockets.target
