@@ -1,0 +1,14 @@
+[Unit]
+Description=PAUK owner-only ingress removal socket
+
+[Socket]
+ListenStream=/run/pauk-ingress-delete.sock
+SocketUser=root
+SocketGroup=vpnplatform-web
+SocketMode=0660
+Accept=yes
+RemoveOnStop=yes
+MaxConnections=4
+
+[Install]
+WantedBy=sockets.target

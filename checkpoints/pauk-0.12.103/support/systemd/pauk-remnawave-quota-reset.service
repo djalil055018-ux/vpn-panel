@@ -1,0 +1,18 @@
+[Unit]
+Description=Process due PAUK traffic resets
+After=docker.service vpn-platform-control-plane.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/pauk-remnawave-quota-reset.py
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX
+UMask=0077
+TimeoutStartSec=24s
