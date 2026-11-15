@@ -1,0 +1,78 @@
+{
+  "controller": "0.1.178",
+  "web": "0.12.103",
+  "archive_sha256": "d2fb4596ded1380288fe01cb4b776614bba7e4bf3aa770a2b65158857b6a28c2",
+  "binaries": {
+    "control-plane": {
+      "bytes": 16703648,
+      "sha256": "b440a4e912047f733bf0e68d5fa37e6a41ad24e6c500c823bd7acd2b53ffeb5a"
+    },
+    "access-reconciler": {
+      "bytes": 11763872,
+      "sha256": "082919e036a3e58ac112e30f20d84c23c03150aa6c392bc9f6ca81b6aea7f2d9"
+    },
+    "deployment-observer": {
+      "bytes": 11288736,
+      "sha256": "ebf546e12e4b2ad1f2f096a6ba305eb4a0965233b2f6acab45fc482e9be8ae3b"
+    },
+    "incident-monitor": {
+      "bytes": 12103840,
+      "sha256": "856c28565ff2808e1e38de1d71ebeef7e35a07d73191004026d4edd83b5d1978"
+    },
+    "rollout-sweeper": {
+      "bytes": 11284640,
+      "sha256": "e738b04e467e58a3d33dc260879fb7c851b122fdc3e5c39cfee260bc1c7fa609"
+    },
+    "webhook-dispatcher": {
+      "bytes": 12046496,
+      "sha256": "b27e09dc35ba062a425f7efb8f8acc90890b961d953f4693bbdcccbf1bcbb69c"
+    }
+  },
+  "parts": [
+    {
+      "name": "controller-checkpoint-0.1.178.tgz.part-00",
+      "bytes": 3145728,
+      "sha256": "feff7d1539e983f95b145677ad8c712ae0932b3614f180069f65f440b243ab1d"
+    },
+    {
+      "name": "controller-checkpoint-0.1.178.tgz.part-01",
+      "bytes": 3145728,
+      "sha256": "db24612b0a0a87b7eec0d261e4daf4bc701a29d0c83e6d698d8c529a866c31a9"
+    },
+    {
+      "name": "controller-checkpoint-0.1.178.tgz.part-02",
+      "bytes": 3145728,
+      "sha256": "a7fbc589d917fb8b8f22f78ffcc9e3c573118585ab5b4dc8ca2bad7d093ff3f9"
+    },
+    {
+      "name": "controller-checkpoint-0.1.178.tgz.part-03",
+      "bytes": 3145728,
+      "sha256": "011838d6b247cb72004e5a67768add467cfa117e7bedd4b7434df2d960bca6fb"
+    },
+    {
+      "name": "controller-checkpoint-0.1.178.tgz.part-04",
+      "bytes": 3145728,
+      "sha256": "652aeba59d6587ca4d828ad452eb80445c8ac540743d12e177e7eadac8f46500"
+    },
+    {
+      "name": "controller-checkpoint-0.1.178.tgz.part-05",
+      "bytes": 3145728,
+      "sha256": "35828f1fed4f248a56ea7a317d0e7acc22abd151abebc4823e85f39d8704f9f9"
+    },
+    {
+      "name": "controller-checkpoint-0.1.178.tgz.part-06",
+      "bytes": 3145728,
+      "sha256": "c192276b9c003e5bdc78d219bd87c1a0eec39b6602e743c884a83f82c6ce692c"
+    },
+    {
+      "name": "controller-checkpoint-0.1.178.tgz.part-07",
+      "bytes": 3145728,
+      "sha256": "470aadcfebec50a80cfe5ff2abd47061cac0b46726f425fc0ba84493191c6ef6"
+    },
+    {
+      "name": "controller-checkpoint-0.1.178.tgz.part-08",
+      "bytes": 2018126,
+      "sha256": "90aa979728bb19b7e8a27d5339279d48165e45ddfb0787255e63e076266f10bd"
+    }
+  ]
+}

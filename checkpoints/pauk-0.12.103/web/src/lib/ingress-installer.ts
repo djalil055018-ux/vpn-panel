@@ -1,0 +1,2 @@
+export const ingressInstallerSHA256="4db88b4f6dfcf99958392b8ac2e5e66a64b9349ccf0635701c7847ea183fc179";
+export function ingressCompanionInstallCommand(origin="https://pauk.panel.winphonestore.name") { return `curl -fsSL ${origin}/install/install-ingress-agent-v0.1.3.py -o /root/pauk-ingress-install.py && echo '${ingressInstallerSHA256}  /root/pauk-ingress-install.py' | sha256sum -c - && python3 /root/pauk-ingress-install.py && systemctl is-active pauk-ingress-agent.service`; }
