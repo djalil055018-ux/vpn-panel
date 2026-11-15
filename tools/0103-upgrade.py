@@ -7,12 +7,14 @@ import grp
 import hashlib
 import http.client
 import importlib.util
+import ipaddress
 import json
 import os
 from pathlib import Path
 import re
 import secrets
 import shutil
+import socket
 import subprocess
 import sys
 import tarfile
@@ -77,6 +79,42 @@ def auth_env(path):
             if len(parts) == 1:
                 result[key] = parts[0]
     return result
+
+
+def ingress_defaults(address=None):
+    configured = auth_env(ENV / "web.env")
+    panel = urlsplit(configured["VPN_PLATFORM_PUBLIC_URL"])
+    subscription = urlsplit(configured.get("VPN_PLATFORM_SUBSCRIPTION_URL") or panel.geturl())
+    if address is None:
+        try:
+            addresses = {item[4][0] for item in socket.getaddrinfo(
+                panel.hostname, panel.port or 443, socket.AF_INET, socket.SOCK_STREAM)}
+        except socket.gaierror:
+            return b""
+        if len(addresses) != 1:
+            return b""
+        address = addresses.pop()
+    ipv4 = ipaddress.IPv4Address(address)
+    if not ipv4.is_global or ipv4.is_multicast or ipv4.is_reserved:
+        return b""
+    if not panel.hostname or not subscription.hostname:
+        return b""
+    entry_id = "pauk-direct-publication"
+    config = {
+        "revision": 1, "vpn_enabled": False, "web_enabled": False,
+        "primary_id": entry_id, "secondary_id": "", "probe_interval_seconds": 60,
+        "panel_host": panel.hostname, "subscription_host": subscription.hostname,
+        "legacy_hosts": [],
+        "entries": [{
+            "id": entry_id, "name": "Основной HTTPS-вход", "address": str(ipv4),
+            "https_port": subscription.port or 443, "panel_port": panel.port or 443,
+            "kind": "native", "ready": True, "check_status": "configured", "check_details": [],
+        }],
+    }
+    encoded = json.dumps(config).encode().hex()
+    return (f"INSERT INTO platform_ingress_config(config,source_rules) "
+            f"VALUES (convert_from(decode('{encoded}','hex'),'UTF8')::jsonb,'[]') "
+            "ON CONFLICT(singleton) DO NOTHING;\n").encode()
 
 
 def package_version(path):
@@ -321,6 +359,7 @@ def upgrade(db):
     private = stage / "private"
     private.mkdir(mode=0o700)
     timers = services()
+    seed = (DIST / "seed.sql").read_bytes() + ingress_defaults()
     sockets = ("pauk-remnawave-native.socket", "pauk-ingress-delete.socket", "pauk-remnawave-quota-reset.timer")
     prior_sockets = [name for name in sockets if unit_active(name)]
     stopped = switched = moved = False
@@ -330,8 +369,7 @@ def upgrade(db):
         stopped = True
         services_to_stop = [timer.removesuffix(".timer") + ".service" for timer in timers]
         run("systemctl", "stop", *timers, *services_to_stop, *prior_sockets, WEB, CONTROL)
-        count, rows = database.prepare(db, target, private, backup,
-                                       (DIST / "seed.sql").read_bytes(), DIST)
+        count, rows = database.prepare(db, target, private, backup, seed, DIST)
         print(f"Verified {rows} rows across {count} existing tables", flush=True)
         for file, (contents, mode) in items.items():
             if file.is_relative_to(PUBLIC):
@@ -382,7 +420,9 @@ def upgrade(db):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true")
+    action = parser.add_mutually_exclusive_group()
+    action.add_argument("--check", action="store_true")
+    action.add_argument("--initialize-ingress", metavar="PUBLIC_IPV4")
     args = parser.parse_args()
     if os.geteuid():
         parser.error("Run with sudo")
@@ -390,7 +430,15 @@ def main():
     with Path("/run/lock/pauk-0103-upgrade.lock").open("w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         db = check()
-        if db is None:
+        if args.initialize_ingress:
+            if db is not None:
+                parser.error("Install PAUK 0.12.103 first")
+            seed = ingress_defaults(args.initialize_ingress)
+            if not seed:
+                parser.error("Use the public IPv4 address of your existing HTTPS entry")
+            database.psql(database.stock_database(), seed)
+            print("The HTTPS entry is initialized. Existing rules were preserved.")
+        elif db is None:
             print("PAUK 0.12.103 is already installed")
         elif args.check:
             print("Public PAUK installation is compatible")
