@@ -64,7 +64,8 @@ fi
 [[ $ADMIN_USER =~ ^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$ ]] || fail "admin username must use letters, digits, dot, underscore, or hyphen"
 if [[ -n $TLS_FULLCHAIN || -n $TLS_KEY ]]; then
   [[ -n $TLS_FULLCHAIN && -n $TLS_KEY && -f $TLS_FULLCHAIN && -f $TLS_KEY ]] || fail "provide both TLS certificate files"
-  openssl x509 -in "$TLS_FULLCHAIN" -checkhost "$DOMAIN" -checkend 2592000 -noout >/dev/null || fail "TLS certificate is invalid or expires within 30 days"
+  openssl x509 -in "$TLS_FULLCHAIN" -checkend 2592000 -noout >/dev/null || fail "TLS certificate is invalid or expires within 30 days"
+  openssl verify -verify_hostname "$DOMAIN" -partial_chain -trusted "$TLS_FULLCHAIN" "$TLS_FULLCHAIN" >/dev/null || fail "TLS certificate does not match the panel domain"
   cmp -s <(openssl x509 -in "$TLS_FULLCHAIN" -pubkey -noout) <(openssl pkey -in "$TLS_KEY" -pubout) || fail "TLS key does not match the certificate"
 fi
 
